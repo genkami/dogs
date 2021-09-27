@@ -1,5 +1,7 @@
 package dogs
 
+import "fmt"
+
 type Eq[T any] struct {
 	Equal func(T, T) bool
 }
@@ -45,3 +47,16 @@ const (
 	EQ
 	GT
 )
+
+func (o Ordering) GoString() string {
+	switch o {
+	case LT:
+		return "LT"
+	case EQ:
+		return "EQ"
+	case GT:
+		return "GT"
+	default:
+		return fmt.Sprintf("<unknown Ordering (%d)>", o)
+	}
+}

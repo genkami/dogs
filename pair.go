@@ -1,5 +1,7 @@
 package dogs
 
+import "fmt"
+
 type Pair[T, U any] struct {
 	First T
 	Second U
@@ -17,6 +19,40 @@ func DerivePtrPairEq[T, U any](et *Eq[T], eu *Eq[U]) *Eq[*Pair[T, U]] {
 	return &Eq[*Pair[T, U]]{
 		Equal: func(p, q *Pair[T, U]) bool {
 			return et.Equal(p.First, q.First) && eu.Equal(p.Second, q.Second)
+		},
+	}
+}
+
+func DerivePairOrd[T, U any](ot *Ord[T], ou *Ord[U]) *Ord[Pair[T, U]] {
+	return &Ord[Pair[T, U]]{
+		Compare: func(p, q Pair[T, U]) Ordering {
+			v := ot.Compare(p.First, q.First)
+			switch v {
+			case LT:
+				return LT
+			case EQ:
+				return ou.Compare(p.Second, q.Second)
+			case GT:
+				return GT
+			}
+			panic(fmt.Errorf("unknown Ordering: %d", v))
+		},
+	}
+}
+
+func DerivePtrPairOrd[T, U any](ot *Ord[T], ou *Ord[U]) *Ord[*Pair[T, U]] {
+	return &Ord[*Pair[T, U]]{
+		Compare: func(p, q *Pair[T, U]) Ordering {
+			v := ot.Compare(p.First, q.First)
+			switch v {
+			case LT:
+				return LT
+			case EQ:
+				return ou.Compare(p.Second, q.Second)
+			case GT:
+				return GT
+			}
+			panic(fmt.Errorf("unknown Ordering: %d", v))
 		},
 	}
 }
