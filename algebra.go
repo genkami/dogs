@@ -5,9 +5,13 @@ type Semigroup[T any] struct {
 	Combine func(T, T) T
 }
 
-func (s *Semigroup[T]) SumWithInit(init T, xs []T) T {
+func (s *Semigroup[T]) SumWithInit(init T, it Iterator[T]) T {
 	acc := init
-	for _, x := range xs {
+	for {
+		x, ok := it.Next()
+		if !ok {
+			break
+		}
 		acc = s.Combine(acc, x)
 	}
 	return acc
@@ -19,6 +23,6 @@ type Monoid[T any] struct {
 	Empty func() T
 }
 
-func (m *Monoid[T]) Sum(xs []T) T {
-	return m.SumWithInit(m.Empty(), xs)
+func (m *Monoid[T]) Sum(it Iterator[T]) T {
+	return m.SumWithInit(m.Empty(), it)
 }

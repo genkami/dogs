@@ -4,11 +4,13 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/genkami/dogs"
 )
 
 func TestSemigroup_SumWithInit(t *testing.T) {
 	subject := func(x int, xs []int) int {
-		return intSemigroup.SumWithInit(x, xs)
+		return intSemigroup.SumWithInit(x, dogs.NewSliceIterator(xs))
 	}
 
 	t.Run("empty", func(t *testing.T) {
@@ -31,7 +33,7 @@ func TestSemigroup_SumWithInit(t *testing.T) {
 
 func TestMonoid_Sum(t *testing.T) {
 	subject := func(xs []int) int {
-		return intMonoid.Sum(xs)
+		return intMonoid.Sum(dogs.NewSliceIterator(xs))
 	}
 
 	t.Run("empty", func(t *testing.T) {
