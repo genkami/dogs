@@ -13,18 +13,17 @@ func NewList[T any](xs ...T) *List[T] {
 	return list
 }
 
-func (xs *List[T]) Iter() *Iterator[T] {
-	it := &listIterable[T]{
+func (xs *List[T]) Iter() Iterator[T] {
+	return &listIterator[T]{
 		cur: xs,
 	}
-	return NewIterator[T](it)
 }
 
-type listIterable[T any] struct {
+type listIterator[T any] struct {
 	cur *List[T]
 }
 
-func (it *listIterable[T]) Next() (T, bool) {
+func (it *listIterator[T]) Next() (T, bool) {
 	if it.cur == nil {
 		var zero T
 		return zero, false

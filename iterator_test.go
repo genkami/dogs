@@ -41,9 +41,9 @@ func TestSliceIterator_Next(t *testing.T) {
 	})
 }
 
-func TestIterator_ToSlice(t *testing.T) {
+func TestIterator_SliceFromIterator(t *testing.T) {
 	subject := func(xs []int) []int {
-		return dogs.NewSliceIterator(xs).ToSlice()
+		return dogs.SliceFromIterator(dogs.NewSliceIterator(xs))
 	}
 	assert.Equal(t, subject([]int{}), []int{})
 	assert.Equal(t, subject([]int{1}), []int{1})
@@ -53,9 +53,10 @@ func TestIterator_ToSlice(t *testing.T) {
 func TestMap(t *testing.T) {
 	subject := func(xs []int) []string {
 		it := dogs.NewSliceIterator(xs)
-		return dogs.Map[int, string](it, func(x int) string {
+		mapped := dogs.Map[int, string](it, func(x int) string {
 			return strconv.FormatInt(int64(x), 10)
-		}).ToSlice()
+		})
+		return dogs.SliceFromIterator(mapped)
 	}
 
 	assert.Equal(t, subject([]int{}), []string{})
@@ -95,7 +96,8 @@ func TestZip(t *testing.T) {
 	subject := func(xs []int, ys []string) []Pair {
 		xit := dogs.NewSliceIterator[int](xs)
 		yit := dogs.NewSliceIterator[string](ys)
-		return dogs.Zip(xit, yit).ToSlice()
+		zipped := dogs.Zip(xit, yit)
+		return dogs.SliceFromIterator(zipped)
 	}
 
 	t.Run("empty", func(t *testing.T) {
