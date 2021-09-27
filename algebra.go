@@ -5,7 +5,7 @@ type Semigroup[T any] struct {
 	Combine func(T, T) T
 }
 
-func (s *Semigroup[T]) SumWithInit(init T, it Iterator[T]) T {
+func (s *Semigroup[T]) SumWithInit(init T, it *Iterator[T]) T {
 	acc := init
 	for {
 		x, ok := it.Next()
@@ -23,6 +23,6 @@ type Monoid[T any] struct {
 	Empty func() T
 }
 
-func (m *Monoid[T]) Sum(it Iterator[T]) T {
+func (m *Monoid[T]) Sum(it *Iterator[T]) T {
 	return m.SumWithInit(m.Empty(), it)
 }

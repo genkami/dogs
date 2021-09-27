@@ -8,8 +8,6 @@ import (
 	"github.com/genkami/dogs"
 )
 
-var _sliceIteratorIsItearator dogs.Iterator[int] = &dogs.SliceIterator[int]{}
-
 func TestSliceIterator(t *testing.T) {
 	t.Run("empty", func(t *testing.T) {
 		it := dogs.NewSliceIterator[string]([]string{})
