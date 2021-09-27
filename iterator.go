@@ -16,6 +16,18 @@ func (it *Iterator[T]) Next() (T, bool) {
 	return it.it.Next()
 }
 
+func (it *Iterator[T]) Fold(init T, fn func(T, T) T) T {
+	var acc T = init
+	for {
+		x, ok := it.Next()
+		if !ok {
+			break
+		}
+		acc = fn(acc, x)
+	}
+	return acc
+}
+
 type sliceIterable[T any] struct {
 	xs []T
 	next int
