@@ -16,6 +16,14 @@ func (it *Iterator[T]) Next() (T, bool) {
 	return it.it.Next()
 }
 
+func (it *Iterator[T]) ToSlice() []T {
+	return Fold[[]T, T](
+		make([]T, 0),
+		it,
+		func(xs []T, x T) []T { return append(xs, x) },
+	)
+}
+
 func Fold[T, U any](init T, it *Iterator[U], fn func(T, U) T) T {
 	var acc T = init
 	for {
@@ -26,6 +34,31 @@ func Fold[T, U any](init T, it *Iterator[U], fn func(T, U) T) T {
 		acc = fn(acc, x)
 	}
 	return acc
+}
+
+func Zip[T, U any](a *Iterator[T], b *Iterator[U]) *Iterator[Pair[T, U]] {
+	it := &zipIterable[T, U]{
+		a: a,
+		b: b,
+	}
+	return NewIterator[Pair[T, U]](it)
+}
+
+type zipIterable[T, U any] struct {
+	a *Iterator[T]
+	b *Iterator[U]
+}
+
+func (it *zipIterable[T, U]) Next() (Pair[T, U], bool) {
+	x, ok := it.a.Next()
+	if !ok {
+		return Pair[T, U]{}, false
+	}
+	y, ok := it.b.Next()
+	if !ok {
+		return Pair[T, U]{}, false
+	}
+	return Pair[T, U]{x, y}, true
 }
 
 type sliceIterable[T any] struct {
