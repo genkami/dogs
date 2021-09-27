@@ -16,7 +16,7 @@ func (it *Iterator[T]) Next() (T, bool) {
 	return it.it.Next()
 }
 
-func (it *Iterator[T]) Fold(init T, fn func(T, T) T) T {
+func Fold[T, U any](init T, it *Iterator[U], fn func(T, U) T) T {
 	var acc T = init
 	for {
 		x, ok := it.Next()
