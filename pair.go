@@ -5,6 +5,22 @@ type Pair[T, U any] struct {
 	Second U
 }
 
+func DerivePairEq[T, U any](et *Eq[T], eu *Eq[U]) *Eq[Pair[T, U]] {
+	return &Eq[Pair[T, U]]{
+		Equal: func(p, q Pair[T, U]) bool {
+			return et.Equal(p.First, q.First) && eu.Equal(p.Second, q.Second)
+		},
+	}
+}
+
+func DerivePtrPairEq[T, U any](et *Eq[T], eu *Eq[U]) *Eq[*Pair[T, U]] {
+	return &Eq[*Pair[T, U]]{
+		Equal: func(p, q *Pair[T, U]) bool {
+			return et.Equal(p.First, q.First) && eu.Equal(p.Second, q.Second)
+		},
+	}
+}
+
 func DerivePairSemigroup[T, U any](st *Semigroup[T], su *Semigroup[U]) *Semigroup[Pair[T, U]] {
 	return &Semigroup[Pair[T, U]]{
 		Combine: func(p, q Pair[T, U]) Pair[T, U] {

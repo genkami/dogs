@@ -10,6 +10,9 @@ var (
 		Semigroup: *intSemigroup,
 		Empty: func() int { return 0 },
 	}
+	intEq = &dogs.Eq[int]{
+		Equal: func(x, y int) bool { return x == y },
+	}
 	intOrd = &dogs.Ord[int]{
 		Compare: func(x, y int) dogs.Ordering {
 			if x < y {
@@ -28,6 +31,9 @@ var (
 	stringMonoid = &dogs.Monoid[string]{
 		Semigroup: *stringSemigroup,
 		Empty: func() string { return "" },
+	}
+	stringEq = &dogs.Eq[string]{
+		Equal: func(x, y string) bool { return x == y },
 	}
 	stringOrd = &dogs.Ord[string]{
 		Compare: func(x, y string) dogs.Ordering {
