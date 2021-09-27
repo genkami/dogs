@@ -27,6 +27,15 @@ We will continue to implement more utility types and functions.
 ## Data types
 * Pair
 
+# Acknowledgements
+This library is inspired mainly by:
+
+* [Haskell standard library](https://hackage.haskell.org/package/base)
+* [Scala Cats](https://typelevel.org/cats/)
+
+and many other functional languages.
+
+
 # License
 
 Distributed under the Apache License, Version 2.0. See LICENSE for more information.
