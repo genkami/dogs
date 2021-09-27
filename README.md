@@ -26,6 +26,7 @@ We will continue to implement more utility types and functions.
 
 ## Data types
 * Pair
+* Iterator
 
 # Acknowledgements
 This library is inspired mainly by:
