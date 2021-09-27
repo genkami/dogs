@@ -4,18 +4,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"github.com/genkami/dogs"
-)
-
-var (
-	intSemigroup = &dogs.Semigroup[int]{
-		Combine: func(x, y int) int { return x + y },
-	}
-	intMonoid = &dogs.Monoid[int]{
-		Semigroup: *intSemigroup,
-		Empty: func() int { return 0 },
-	}
 )
 
 func TestSemigroup_SumWithInit(t *testing.T) {
@@ -26,7 +14,7 @@ func TestSemigroup_SumWithInit(t *testing.T) {
 	t.Run("empty", func(t *testing.T) {
 		assert.Equal(t, subject(0, []int{}), 0)
 		assert.Equal(t, subject(1, []int{}), 1)
-		assert.Equal(t, subject(999, []int{}), 999)	
+		assert.Equal(t, subject(999, []int{}), 999)
 	})
 
 	t.Run("singleton", func(t *testing.T) {
