@@ -6,15 +6,7 @@ type Semigroup[T any] struct {
 }
 
 func (s *Semigroup[T]) SumWithInit(init T, it *Iterator[T]) T {
-	acc := init
-	for {
-		x, ok := it.Next()
-		if !ok {
-			break
-		}
-		acc = s.Combine(acc, x)
-	}
-	return acc
+	return it.Fold(init, s.Combine)
 }
 
 // Monoid is a Semigroup with identity.
