@@ -1,0 +1,2 @@
+# dogs
+Make Go functional
