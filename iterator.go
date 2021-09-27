@@ -1,9 +1,14 @@
 package dogs
 
+// Iterable represents basic methods that are needed to construct Iterator.
 type Iterable[T any] interface {
+	// Next returns the next element in this Iterable.
+	// The second return value is false if and only if there are no elements to return.
 	Next() (T, bool)
 }
 
+// Iterator is an Iterable with additional utility functions.
+// TODO: we don't need this anymore.
 type Iterator[T any] struct {
 	it Iterable[T]
 }
@@ -16,6 +21,7 @@ func (it *Iterator[T]) Next() (T, bool) {
 	return it.it.Next()
 }
 
+// ToSlice converts an Iterator[T] into []T.
 func (it *Iterator[T]) ToSlice() []T {
 	return Fold[[]T, T](
 		make([]T, 0),
@@ -24,6 +30,7 @@ func (it *Iterator[T]) ToSlice() []T {
 	)
 }
 
+// Map(it, f) returns an iterator that applies f to each element of it.
 func Map[T, U any](it *Iterator[T], fn func(T) U) *Iterator[U] {
 	iterable := &mapIterable[T, U]{
 		it: it,
@@ -46,6 +53,7 @@ func (it *mapIterable[T, U]) Next() (U, bool) {
 	return it.fn(x), true
 }
 
+// Fold accumulates every element in Iterator by applying fn.
 func Fold[T, U any](init T, it *Iterator[U], fn func(T, U) T) T {
 	var acc T = init
 	for {
@@ -58,6 +66,7 @@ func Fold[T, U any](init T, it *Iterator[U], fn func(T, U) T) T {
 	return acc
 }
 
+// Zip combines two Iterators that yields pairs of corresponding elements.
 func Zip[T, U any](a *Iterator[T], b *Iterator[U]) *Iterator[Pair[T, U]] {
 	it := &zipIterable[T, U]{
 		a: a,
@@ -88,6 +97,7 @@ type sliceIterable[T any] struct {
 	next int
 }
 
+// NewSliceIterator returns an Iterator that iterates over given slice.
 func NewSliceIterator[T any](xs []T) *Iterator[T] {
 	it := &sliceIterable[T]{
 		xs: xs,
