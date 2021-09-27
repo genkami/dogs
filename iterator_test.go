@@ -50,6 +50,20 @@ func TestIterator_ToSlice(t *testing.T) {
 	assert.Equal(t, subject([]int{1, 2, 3}), []int{1, 2, 3})
 }
 
+func TestMap(t *testing.T) {
+	subject := func(xs []int) []string {
+		it := dogs.NewSliceIterator(xs)
+		return dogs.Map[int, string](it, func(x int) string {
+			return strconv.FormatInt(int64(x), 10)
+		}).ToSlice()
+	}
+
+	assert.Equal(t, subject([]int{}), []string{})
+	assert.Equal(t, subject([]int{1}), []string{"1"})
+	assert.Equal(t, subject([]int{1, 2}), []string{"1", "2"})
+	assert.Equal(t, subject([]int{1, 2, 3}), []string{"1", "2", "3"})
+}
+
 func TestFold(t *testing.T) {
 	add := func(x string, y int) string {
 		return x + strconv.FormatInt(int64(y), 10)

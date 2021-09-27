@@ -24,6 +24,28 @@ func (it *Iterator[T]) ToSlice() []T {
 	)
 }
 
+func Map[T, U any](it *Iterator[T], fn func(T) U) *Iterator[U] {
+	iterable := &mapIterable[T, U]{
+		it: it,
+		fn: fn,
+	}
+	return NewIterator[U](iterable)
+}
+
+type mapIterable[T, U any] struct {
+	it *Iterator[T]
+	fn func(T) U
+}
+
+func (it *mapIterable[T, U]) Next() (U, bool) {
+	x, ok := it.it.Next()
+	if !ok {
+		var zero U
+		return zero, false
+	}
+	return it.fn(x), true
+}
+
 func Fold[T, U any](init T, it *Iterator[U], fn func(T, U) T) T {
 	var acc T = init
 	for {
