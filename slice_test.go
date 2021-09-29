@@ -43,3 +43,18 @@ func TestSlice_Iter(t *testing.T) {
 	})
 }
 
+// func TestSlice_Sort(t *testing.T) {
+// 	subject := func(xs []int) []int {
+// 		dogs.Slice[int](xs).Sort(intOrd)
+// 		return xs
+// 	}
+
+// 	assert.Equal(t, subject([]int{}), []int{})
+// 	assert.Equal(t, subject([]int{1}), []int{1})
+
+// 	assert.Equal(t, subject([]int{1, 2}), []int{1, 2})
+// 	assert.Equal(t, subject([]int{2, 1}), []int{2, 1})
+
+// 	assert.Equal(t, subject([]int{3, 5, 2, 1, 4}), []int{1, 2, 3, 4, 5})
+// }
+
