@@ -15,14 +15,17 @@ func (s *DefaultSemigroup[T]) Combine(x, y T) T {
 }
 
 // Monoid is a Semigroup with identity.
-type Monoid[T any] struct {
+type Monoid[T any] interface {
 	Semigroup[T]
-	Empty func() T
+	Empty() T
 }
 
-// Sum sums up all values in `it`.
-// It returns `Empty()` when `it` is empty.
-// TODO: this should be a function
-func (m *Monoid[T]) Sum(it Iterator[T]) T {
-	return SumWithInit(m.Empty(), it, m.Semigroup)
+// DefaultMonoid is a default implementation of Monoid.
+type DefaultMonoid[T any] struct {
+	Semigroup[T]
+	EmptyImpl func() T
+}
+
+func (m *DefaultMonoid[T]) Empty() T {
+	return m.EmptyImpl()
 }

@@ -87,10 +87,12 @@ func DerivePtrPairSemigroup[T, U any](st Semigroup[T], su Semigroup[U]) Semigrou
 }
 
 // DerivePairMonoid derives Monoid[Pair[T, U]] from Monoid[T] and Monoid[U].
-func DerivePairMonoid[T, U any](mt *Monoid[T], mu *Monoid[U]) *Monoid[Pair[T, U]] {
-	return &Monoid[Pair[T, U]]{
-		Semigroup: DerivePairSemigroup(mt.Semigroup, mu.Semigroup),
-		Empty: func() Pair[T, U] {
+func DerivePairMonoid[T, U any](mt Monoid[T], mu Monoid[U]) Monoid[Pair[T, U]] {
+	var st Semigroup[T] = mt
+	var su Semigroup[U] = mu
+	return &DefaultMonoid[Pair[T, U]]{
+		Semigroup: DerivePairSemigroup[T, U](st, su),
+		EmptyImpl: func() Pair[T, U] {
 			return Pair[T, U]{
 				First: mt.Empty(),
 				Second: mu.Empty(),
@@ -100,10 +102,12 @@ func DerivePairMonoid[T, U any](mt *Monoid[T], mu *Monoid[U]) *Monoid[Pair[T, U]
 }
 
 // DerivePtrPairMonoid derives Monoid[Pair[T, U]] from Monoid[T] and Monoid[U].
-func DerivePtrPairMonoid[T, U any](mt *Monoid[T], mu *Monoid[U]) *Monoid[*Pair[T, U]] {
-	return &Monoid[*Pair[T, U]]{
-		Semigroup: DerivePtrPairSemigroup(mt.Semigroup, mu.Semigroup),
-		Empty: func() *Pair[T, U]{
+func DerivePtrPairMonoid[T, U any](mt Monoid[T], mu Monoid[U]) Monoid[*Pair[T, U]] {
+	var st Semigroup[T] = mt
+	var su Semigroup[U] = mu
+	return &DefaultMonoid[*Pair[T, U]]{
+		Semigroup: DerivePtrPairSemigroup[T, U](st, su),
+		EmptyImpl: func() *Pair[T, U]{
 			return &Pair[T, U]{
 				First: mt.Empty(),
 				Second: mu.Empty(),

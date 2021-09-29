@@ -82,6 +82,13 @@ func SumWithInit[T any](init T, it Iterator[T], s Semigroup[T]) T {
 	return Fold[T, T](init, it, s.Combine)
 }
 
+// Sum sums up all values in `it`.
+// It returns `Empty()` when `it` is empty.
+func Sum[T any](it Iterator[T], m Monoid[T]) T {
+	var s Semigroup[T] = m
+	return SumWithInit(m.Empty(), it, s)
+}
+
 // NewSliceIterator returns an Iterator that iterates over given slice.
 func NewSliceIterator[T any](xs []T) Iterator[T] {
 	return &sliceIterator[T]{

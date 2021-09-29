@@ -6,9 +6,9 @@ var (
 	intSemigroup dogs.Semigroup[int] = &dogs.DefaultSemigroup[int]{
 		CombineImpl: func(x, y int) int { return x + y },
 	}
-	intMonoid = &dogs.Monoid[int]{
+	intMonoid dogs.Monoid[int] = &dogs.DefaultMonoid[int]{
 		Semigroup: intSemigroup,
-		Empty: func() int { return 0 },
+		EmptyImpl: func() int { return 0 },
 	}
 	intEq dogs.Eq[int] = &dogs.DefaultEq[int]{
 		EqualImpl: func(x, y int) bool { return x == y },
@@ -28,9 +28,9 @@ var (
 	stringSemigroup dogs.Semigroup[string] = &dogs.DefaultSemigroup[string]{
 		CombineImpl: func(x, y string) string { return x + y },
 	}
-	stringMonoid = &dogs.Monoid[string]{
+	stringMonoid dogs.Monoid[string] = &dogs.DefaultMonoid[string]{
 		Semigroup: stringSemigroup,
-		Empty: func() string { return "" },
+		EmptyImpl: func() string { return "" },
 	}
 	stringEq dogs.Eq[string] = &dogs.DefaultEq[string]{
 		EqualImpl: func(x, y string) bool { return x == y },
