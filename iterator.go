@@ -16,6 +16,13 @@ func SliceFromIterator[T any](it Iterator[T]) []T {
 	)
 }
 
+// TODO: Find(it, fn)
+// TODO: FindIndex(it, fn)
+// TODO: FindElem(it, e, eq)
+// TODO: FindElemIndex(it, e, eq)
+// TODO: Take(it, n)
+// TODO: Drop(it, n)
+
 // Map(it, f) returns an iterator that applies f to each element of it.
 func Map[T, U any](it Iterator[T], fn func(T) U) Iterator[U] {
 	return &mapIterator[T, U]{
@@ -89,26 +96,3 @@ func Sum[T any](it Iterator[T], m Monoid[T]) T {
 	return SumWithInit(m.Empty(), it, s)
 }
 
-// NewSliceIterator returns an Iterator that iterates over given slice.
-func NewSliceIterator[T any](xs []T) Iterator[T] {
-	return &sliceIterator[T]{
-		xs: xs,
-		next: 0,
-	}
-}
-
-type sliceIterator[T any] struct {
-	xs []T
-	next int
-}
-
-
-func (it *sliceIterator[T]) Next() (T, bool) {
-	if len(it.xs) <= it.next {
-		var zero T
-		return zero, false
-	}
-	i := it.next
-	it.next++
-	return it.xs[i], true
-}

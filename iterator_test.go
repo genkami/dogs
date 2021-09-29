@@ -9,41 +9,9 @@ import (
 	"github.com/genkami/dogs"
 )
 
-func TestSliceIterator_Next(t *testing.T) {
-	t.Run("empty", func(t *testing.T) {
-		it := dogs.NewSliceIterator[string]([]string{})
-		_, ok := it.Next()
-		assert.False(t, ok)
-	})
-
-	t.Run("singleton", func(t *testing.T) {
-		it := dogs.NewSliceIterator[string]([]string{"hoge"})
-		x, ok := it.Next()
-		assert.True(t, ok)
-		assert.Equal(t, x, "hoge")
-		_, ok = it.Next()
-		assert.False(t, ok)
-	})
-
-	t.Run("multiple elements", func(t *testing.T) {
-		it := dogs.NewSliceIterator[string]([]string{"hoge", "fuga", "foo"})
-		x, ok := it.Next()
-		assert.True(t, ok)
-		assert.Equal(t, x, "hoge")
-		x, ok = it.Next()
-		assert.True(t, ok)
-		assert.Equal(t, x, "fuga")
-		x, ok = it.Next()
-		assert.True(t, ok)
-		assert.Equal(t, x, "foo")
-		_, ok = it.Next()
-		assert.False(t, ok)
-	})
-}
-
-func TestIterator_SliceFromIterator(t *testing.T) {
+func TestSliceFromIterator(t *testing.T) {
 	subject := func(xs []int) []int {
-		return dogs.SliceFromIterator(dogs.NewSliceIterator(xs))
+		return dogs.SliceFromIterator(dogs.Slice[int](xs).Iter())
 	}
 	assert.Equal(t, subject([]int{}), []int{})
 	assert.Equal(t, subject([]int{1}), []int{1})
@@ -52,7 +20,7 @@ func TestIterator_SliceFromIterator(t *testing.T) {
 
 func TestMap(t *testing.T) {
 	subject := func(xs []int) []string {
-		it := dogs.NewSliceIterator(xs)
+		it := dogs.Slice[int](xs).Iter()
 		mapped := dogs.Map[int, string](it, func(x int) string {
 			return strconv.FormatInt(int64(x), 10)
 		})
@@ -70,7 +38,7 @@ func TestFold(t *testing.T) {
 		return x + strconv.FormatInt(int64(y), 10)
 	}
 	subject := func(x string, xs []int) string {
-		it := dogs.NewSliceIterator(xs)
+		it := dogs.Slice[int](xs).Iter()
 		return dogs.Fold[string, int](x, it, add)
 	}
 
@@ -94,8 +62,8 @@ func TestFold(t *testing.T) {
 func TestZip(t *testing.T) {
 	type Pair = dogs.Pair[int, string]
 	subject := func(xs []int, ys []string) []Pair {
-		xit := dogs.NewSliceIterator[int](xs)
-		yit := dogs.NewSliceIterator[string](ys)
+		xit := dogs.Slice[int](xs).Iter()
+		yit := dogs.Slice[string](ys).Iter()
 		zipped := dogs.Zip(xit, yit)
 		return dogs.SliceFromIterator(zipped)
 	}
@@ -121,7 +89,7 @@ func TestZip(t *testing.T) {
 
 func TestSumWithInit(t *testing.T) {
 	subject := func(x int, xs []int) int {
-		return dogs.SumWithInit(x, dogs.NewSliceIterator(xs), intSemigroup)
+		return dogs.SumWithInit(x, dogs.Slice[int](xs).Iter(), intSemigroup)
 	}
 
 	t.Run("empty", func(t *testing.T) {
@@ -144,7 +112,7 @@ func TestSumWithInit(t *testing.T) {
 
 func TestSum(t *testing.T) {
 	subject := func(xs []int) int {
-		return dogs.Sum(dogs.NewSliceIterator(xs), intMonoid)
+		return dogs.Sum(dogs.Slice[int](xs).Iter(), intMonoid)
 	}
 
 	t.Run("empty", func(t *testing.T) {
