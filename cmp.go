@@ -3,10 +3,21 @@ package dogs
 import "fmt"
 
 // Eq defines equality of type T.
-type Eq[T any] struct {
+type Eq[T any] interface {
 	// Equal returns true if and only if given two arguments are the same.
-	Equal func(T, T) bool
+	Equal(T, T) bool
 }
+
+// DefaultEq is a default implementation of Eq.
+type DefaultEq[T any] struct {
+	EqualImpl func(T, T) bool
+}
+
+func (eq *DefaultEq[T]) Equal(x, y T) bool {
+	return eq.EqualImpl(x, y)
+}
+
+// TODO: add DeriveEq
 
 // Ord defines order of type T.
 type Ord[T any] struct {

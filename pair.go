@@ -9,18 +9,18 @@ type Pair[T, U any] struct {
 }
 
 // DerivePairEq derives Eq[Pair[T, U]] from Eq[T] and Eq[U].
-func DerivePairEq[T, U any](et *Eq[T], eu *Eq[U]) *Eq[Pair[T, U]] {
-	return &Eq[Pair[T, U]]{
-		Equal: func(p, q Pair[T, U]) bool {
+func DerivePairEq[T, U any](et Eq[T], eu Eq[U]) Eq[Pair[T, U]] {
+	return &DefaultEq[Pair[T, U]]{
+		EqualImpl: func(p, q Pair[T, U]) bool {
 			return et.Equal(p.First, q.First) && eu.Equal(p.Second, q.Second)
 		},
 	}
 }
 
 // DerivePtrPairEq derives Eq[*Pair[T, U]] from Eq[T] and Eq[U].
-func DerivePtrPairEq[T, U any](et *Eq[T], eu *Eq[U]) *Eq[*Pair[T, U]] {
-	return &Eq[*Pair[T, U]]{
-		Equal: func(p, q *Pair[T, U]) bool {
+func DerivePtrPairEq[T, U any](et Eq[T], eu Eq[U]) Eq[*Pair[T, U]] {
+	return &DefaultEq[*Pair[T, U]]{
+		EqualImpl: func(p, q *Pair[T, U]) bool {
 			return et.Equal(p.First, q.First) && eu.Equal(p.Second, q.Second)
 		},
 	}
