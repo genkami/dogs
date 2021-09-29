@@ -27,9 +27,9 @@ func DerivePtrPairEq[T, U any](et Eq[T], eu Eq[U]) Eq[*Pair[T, U]] {
 }
 
 // DerivePairOrd derives Ord[Pair[T, U]] from Ord[T] and Ord[U].
-func DerivePairOrd[T, U any](ot *Ord[T], ou *Ord[U]) *Ord[Pair[T, U]] {
-	return &Ord[Pair[T, U]]{
-		Compare: func(p, q Pair[T, U]) Ordering {
+func DerivePairOrd[T, U any](ot Ord[T], ou Ord[U]) Ord[Pair[T, U]] {
+	return &DefaultOrd[Pair[T, U]]{
+		CompareImpl: func(p, q Pair[T, U]) Ordering {
 			v := ot.Compare(p.First, q.First)
 			switch v {
 			case LT:
@@ -45,9 +45,9 @@ func DerivePairOrd[T, U any](ot *Ord[T], ou *Ord[U]) *Ord[Pair[T, U]] {
 }
 
 // DerivePtrPairOrd derives Ord[*Pair[T, U]] from Ord[T] and Ord[U].
-func DerivePtrPairOrd[T, U any](ot *Ord[T], ou *Ord[U]) *Ord[*Pair[T, U]] {
-	return &Ord[*Pair[T, U]]{
-		Compare: func(p, q *Pair[T, U]) Ordering {
+func DerivePtrPairOrd[T, U any](ot Ord[T], ou Ord[U]) Ord[*Pair[T, U]] {
+	return &DefaultOrd[*Pair[T, U]]{
+		CompareImpl: func(p, q *Pair[T, U]) Ordering {
 			v := ot.Compare(p.First, q.First)
 			switch v {
 			case LT:

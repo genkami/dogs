@@ -13,8 +13,8 @@ var (
 	intEq dogs.Eq[int] = &dogs.DefaultEq[int]{
 		EqualImpl: func(x, y int) bool { return x == y },
 	}
-	intOrd = &dogs.Ord[int]{
-		Compare: func(x, y int) dogs.Ordering {
+	intOrd dogs.Ord[int] = &dogs.DefaultOrd[int]{
+		CompareImpl: func(x, y int) dogs.Ordering {
 			if x < y {
 				return dogs.LT
 			} else if x == y {
@@ -35,8 +35,8 @@ var (
 	stringEq dogs.Eq[string] = &dogs.DefaultEq[string]{
 		EqualImpl: func(x, y string) bool { return x == y },
 	}
-	stringOrd = &dogs.Ord[string]{
-		Compare: func(x, y string) dogs.Ordering {
+	stringOrd dogs.Ord[string] = &dogs.DefaultOrd[string]{
+		CompareImpl: func(x, y string) dogs.Ordering {
 			if x < y {
 				return dogs.LT
 			} else if x == y {
