@@ -118,3 +118,26 @@ func TestZip(t *testing.T) {
 		assert.Equal(t, subject([]int{1, 2, 3}, []string{"a"}), []Pair{{1, "a"}})
 	})
 }
+
+func TestSumWithInit(t *testing.T) {
+	subject := func(x int, xs []int) int {
+		return dogs.SumWithInit(x, dogs.NewSliceIterator(xs), intSemigroup)
+	}
+
+	t.Run("empty", func(t *testing.T) {
+		assert.Equal(t, subject(0, []int{}), 0)
+		assert.Equal(t, subject(1, []int{}), 1)
+		assert.Equal(t, subject(999, []int{}), 999)
+	})
+
+	t.Run("singleton", func(t *testing.T) {
+		assert.Equal(t, subject(0, []int{1}), 1)
+		assert.Equal(t, subject(1, []int{2}), 3)
+		assert.Equal(t, subject(123, []int{456}), 579)
+	})
+
+	t.Run("multiple elements", func(t *testing.T) {
+		assert.Equal(t, subject(0, []int{1, 2, 3}), 6)
+		assert.Equal(t, subject(1, []int{10, 100, 1000}), 1111)
+	})
+}

@@ -3,11 +3,11 @@ package dogs_test
 import "github.com/genkami/dogs"
 
 var (
-	intSemigroup = &dogs.Semigroup[int]{
-		Combine: func(x, y int) int { return x + y },
+	intSemigroup dogs.Semigroup[int] = &dogs.DefaultSemigroup[int]{
+		CombineImpl: func(x, y int) int { return x + y },
 	}
 	intMonoid = &dogs.Monoid[int]{
-		Semigroup: *intSemigroup,
+		Semigroup: intSemigroup,
 		Empty: func() int { return 0 },
 	}
 	intEq dogs.Eq[int] = &dogs.DefaultEq[int]{
@@ -25,11 +25,11 @@ var (
 		},
 	}
 
-	stringSemigroup = &dogs.Semigroup[string]{
-		Combine: func(x, y string) string { return x + y },
+	stringSemigroup dogs.Semigroup[string] = &dogs.DefaultSemigroup[string]{
+		CombineImpl: func(x, y string) string { return x + y },
 	}
 	stringMonoid = &dogs.Monoid[string]{
-		Semigroup: *stringSemigroup,
+		Semigroup: stringSemigroup,
 		Empty: func() string { return "" },
 	}
 	stringEq dogs.Eq[string] = &dogs.DefaultEq[string]{

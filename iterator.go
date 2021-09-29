@@ -76,6 +76,12 @@ func (it *zipIterator[T, U]) Next() (Pair[T, U], bool) {
 	return Pair[T, U]{x, y}, true
 }
 
+
+// SumWithInit sums up `init` and all values in `it`.
+func SumWithInit[T any](init T, it Iterator[T], s Semigroup[T]) T {
+	return Fold[T, T](init, it, s.Combine)
+}
+
 // NewSliceIterator returns an Iterator that iterates over given slice.
 func NewSliceIterator[T any](xs []T) Iterator[T] {
 	return &sliceIterator[T]{
