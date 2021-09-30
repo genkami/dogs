@@ -95,6 +95,8 @@ func Fold[T, U any](init T, it Iterator[U], fn func(T, U) T) T {
 	return acc
 }
 
+// TODO: ForEach
+
 // Zip combines two Iterators that yields pairs of corresponding elements.
 func Zip[T, U any](a Iterator[T], b Iterator[U]) Iterator[Pair[T, U]] {
 	return &zipIterator[T, U]{
@@ -151,6 +153,9 @@ func (it *unfoldIterator[T, U]) Next() (U, bool) {
 	it.state = state
 	return next, true
 }
+
+// TODO: EnumFrom
+// TODO: EnumFromTo
 
 // SumWithInit sums up `init` and all values in `it`.
 func SumWithInit[T any](init T, it Iterator[T], s Semigroup[T]) T {
