@@ -1,23 +1,23 @@
-package dogs_test
+package pair_test
 
 import (
 	"github.com/genkami/dogs/classes/algebra"
 	"github.com/genkami/dogs/classes/cmp"
 	"testing"
 	"github.com/stretchr/testify/assert"
-	"github.com/genkami/dogs"
+	"github.com/genkami/dogs/types/pair"
 )
 
 func TestPair_Values(t *testing.T) {
-	a, b := dogs.Pair[int, string]{123, "abc"}.Values()
+	a, b := pair.Pair[int, string]{123, "abc"}.Values()
 	assert.Equal(t, a, 123)
 	assert.Equal(t, b, "abc")
 }
 
 func TestDerivePairEq(t *testing.T) {
-	e := dogs.DerivePairEq(cmp.DeriveEq[int](), cmp.DeriveEq[string]())
-	pair := func(x int, y string) dogs.Pair[int, string] {
-		return dogs.Pair[int, string]{x, y}
+	e := pair.DerivePairEq(cmp.DeriveEq[int](), cmp.DeriveEq[string]())
+	pair := func(x int, y string) pair.Pair[int, string] {
+		return pair.Pair[int, string]{x, y}
 	}
 	assert.True(t, e.Equal(pair(1, "hoge"), pair(1, "hoge")))
 	assert.False(t, e.Equal(pair(2, "hoge"), pair(1, "hoge")))
@@ -26,9 +26,9 @@ func TestDerivePairEq(t *testing.T) {
 }
 
 func TestDerivePtrPairEq(t *testing.T) {
-	e := dogs.DerivePtrPairEq(cmp.DeriveEq[int](), cmp.DeriveEq[string]())
-	pair := func(x int, y string) *dogs.Pair[int, string] {
-		return &dogs.Pair[int, string]{x, y}
+	e := pair.DerivePtrPairEq(cmp.DeriveEq[int](), cmp.DeriveEq[string]())
+	pair := func(x int, y string) *pair.Pair[int, string] {
+		return &pair.Pair[int, string]{x, y}
 	}
 	assert.True(t, e.Equal(pair(1, "hoge"), pair(1, "hoge")))
 	assert.False(t, e.Equal(pair(2, "hoge"), pair(1, "hoge")))
@@ -37,9 +37,9 @@ func TestDerivePtrPairEq(t *testing.T) {
 }
 
 func TestDerivePairOrd(t *testing.T) {
-	subject := dogs.DerivePairOrd(cmp.DeriveOrd[int](), cmp.DeriveOrd[string]()).Compare
-	pair := func(x int, y string) dogs.Pair[int, string] {
-		return dogs.Pair[int, string]{x, y}
+	subject := pair.DerivePairOrd(cmp.DeriveOrd[int](), cmp.DeriveOrd[string]()).Compare
+	pair := func(x int, y string) pair.Pair[int, string] {
+		return pair.Pair[int, string]{x, y}
 	}
 
 	assert.Equal(t, subject(pair(1, "hoge"), pair(1, "hoge")), cmp.EQ)
@@ -54,9 +54,9 @@ func TestDerivePairOrd(t *testing.T) {
 }
 
 func TestDerivePtrPairOrd(t *testing.T) {
-	subject := dogs.DerivePtrPairOrd(cmp.DeriveOrd[int](), cmp.DeriveOrd[string]()).Compare
-	pair := func(x int, y string) *dogs.Pair[int, string] {
-		return &dogs.Pair[int, string]{x, y}
+	subject := pair.DerivePtrPairOrd(cmp.DeriveOrd[int](), cmp.DeriveOrd[string]()).Compare
+	pair := func(x int, y string) *pair.Pair[int, string] {
+		return &pair.Pair[int, string]{x, y}
 	}
 
 	assert.Equal(t, subject(pair(1, "hoge"), pair(1, "hoge")), cmp.EQ)
@@ -71,46 +71,46 @@ func TestDerivePtrPairOrd(t *testing.T) {
 }
 
 func TestDerivePairSemigroup(t *testing.T) {
-	s := dogs.DerivePairSemigroup(
+	s := pair.DerivePairSemigroup(
 		algebra.DeriveAdditiveSemigroup[int](),
 		algebra.DeriveAdditiveSemigroup[string](),
 	)
-	pair := func(x int, y string) dogs.Pair[int, string] {
-		return dogs.Pair[int, string]{x, y}
+	pair := func(x int, y string) pair.Pair[int, string] {
+		return pair.Pair[int, string]{x, y}
 	}
 	assert.Equal(t, s.Combine(pair(1, "hoge"), pair(2, "fuga")), pair(3, "hogefuga"))
 }
 
 func TestDerivePtrPairSemigroup(t *testing.T) {
-	s := dogs.DerivePtrPairSemigroup(
+	s := pair.DerivePtrPairSemigroup(
 		algebra.DeriveAdditiveSemigroup[int](),
 		algebra.DeriveAdditiveSemigroup[string](),
 	)
-	pair := func(x int, y string) *dogs.Pair[int, string] {
-		return &dogs.Pair[int, string]{x, y}
+	pair := func(x int, y string) *pair.Pair[int, string] {
+		return &pair.Pair[int, string]{x, y}
 	}
 	assert.Equal(t, s.Combine(pair(1, "hoge"), pair(2, "fuga")), pair(3, "hogefuga"))
 }
 
 func TestDerivePairMonoid(t *testing.T) {
-	m := dogs.DerivePairMonoid(
+	m := pair.DerivePairMonoid(
 		algebra.DeriveAdditiveMonoid[int](),
 		algebra.DeriveAdditiveMonoid[string](),
 	)
-	pair := func(x int, y string) dogs.Pair[int, string] {
-		return dogs.Pair[int, string]{x, y}
+	pair := func(x int, y string) pair.Pair[int, string] {
+		return pair.Pair[int, string]{x, y}
 	}
 	assert.Equal(t, m.Combine(pair(1, "hoge"), pair(2, "fuga")), pair(3, "hogefuga"))
 	assert.Equal(t, m.Combine(m.Empty(), pair(123, "foo")), pair(123, "foo"))
 }
 
 func TestDerivePtrPairMonoid(t *testing.T) {
-	m := dogs.DerivePtrPairMonoid(
+	m := pair.DerivePtrPairMonoid(
 		algebra.DeriveAdditiveMonoid[int](),
 		algebra.DeriveAdditiveMonoid[string](),
 	)
-	pair := func(x int, y string) *dogs.Pair[int, string] {
-		return &dogs.Pair[int, string]{x, y}
+	pair := func(x int, y string) *pair.Pair[int, string] {
+		return &pair.Pair[int, string]{x, y}
 	}
 	assert.Equal(t, m.Combine(pair(1, "hoge"), pair(2, "fuga")), pair(3, "hogefuga"))
 	assert.Equal(t, m.Combine(m.Empty(), pair(123, "foo")), pair(123, "foo"))

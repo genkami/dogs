@@ -3,6 +3,7 @@ package dogs
 import (
 	"github.com/genkami/dogs/classes/algebra"
 	"github.com/genkami/dogs/classes/cmp"
+	"github.com/genkami/dogs/types/pair"
 )
 
 // Iterable iterates over some set of elements.
@@ -103,7 +104,7 @@ func Fold[T, U any](init T, it Iterator[U], fn func(T, U) T) T {
 // TODO: ForEach
 
 // Zip combines two Iterators that yields pairs of corresponding elements.
-func Zip[T, U any](a Iterator[T], b Iterator[U]) Iterator[Pair[T, U]] {
+func Zip[T, U any](a Iterator[T], b Iterator[U]) Iterator[pair.Pair[T, U]] {
 	return &zipIterator[T, U]{
 		a: a,
 		b: b,
@@ -115,16 +116,16 @@ type zipIterator[T, U any] struct {
 	b Iterator[U]
 }
 
-func (it *zipIterator[T, U]) Next() (Pair[T, U], bool) {
+func (it *zipIterator[T, U]) Next() (pair.Pair[T, U], bool) {
 	x, ok := it.a.Next()
 	if !ok {
-		return Pair[T, U]{}, false
+		return pair.Pair[T, U]{}, false
 	}
 	y, ok := it.b.Next()
 	if !ok {
-		return Pair[T, U]{}, false
+		return pair.Pair[T, U]{}, false
 	}
-	return Pair[T, U]{x, y}, true
+	return pair.Pair[T, U]{x, y}, true
 }
 
 

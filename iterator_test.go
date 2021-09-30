@@ -2,6 +2,7 @@ package dogs_test
 
 import (
 	"github.com/genkami/dogs/classes/algebra"
+	"github.com/genkami/dogs/types/pair"
 	"strconv"
 	"testing"
 	"github.com/stretchr/testify/assert"
@@ -166,7 +167,7 @@ func TestFold(t *testing.T) {
 }
 
 func TestZip(t *testing.T) {
-	type Pair = dogs.Pair[int, string]
+	type Pair = pair.Pair[int, string]
 	subject := func(xs []int, ys []string) []Pair {
 		xit := dogs.Slice[int](xs).Iter()
 		yit := dogs.Slice[string](ys).Iter()

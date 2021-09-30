@@ -1,4 +1,4 @@
-package dogs
+package pair
 
 import (
 	"fmt"
