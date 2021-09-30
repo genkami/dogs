@@ -14,44 +14,63 @@ func TestDeriveEq(t *testing.T) {
 	assert.False(t, eq.Equal(1, 2))
 }
 
-func TestDefaultOrd_Lt(t *testing.T) {
-	subject := intOrd.Lt
-	assert.True(t, subject(123, 124))
-	assert.False(t, subject(123, 123))
-	assert.False(t, subject(123, 122))
+func TestDeriveOrd(t *testing.T) {
+	ord := dogs.DeriveOrd[int]()
+	testIntOrd(t, ord)
 }
 
-func TestDefaultOrd_Le(t *testing.T) {
-	subject := intOrd.Le
-	assert.True(t, subject(123, 124))
-	assert.True(t, subject(123, 123))
-	assert.False(t, subject(123, 122))
+func TestDefaultOrd(t *testing.T) {
+	ord := intOrd
+	testIntOrd(t, ord)
 }
 
-func TestDefaultOrd_Gt(t *testing.T) {
-	subject := intOrd.Gt
-	assert.False(t, subject(123, 124))
-	assert.False(t, subject(123, 123))
-	assert.True(t, subject(123, 122))
-}
+func testIntOrd(t *testing.T, intOrd dogs.Ord[int]) {
+	t.Run("Compare", func(t *testing.T) {
+		subject := intOrd.Compare
+		assert.Equal(t, subject(1, 1), dogs.EQ)
+		assert.Equal(t, subject(1, 2), dogs.LT)
+		assert.Equal(t, subject(1, 0), dogs.GT)
+	})
 
-func TestDefaultOrd_Ge(t *testing.T) {
-	subject := intOrd.Ge
-	assert.False(t, subject(123, 124))
-	assert.True(t, subject(123, 123))
-	assert.True(t, subject(123, 122))
-}
+	t.Run("Lt", func(t *testing.T) {
+		subject := intOrd.Lt
+		assert.True(t, subject(123, 124))
+		assert.False(t, subject(123, 123))
+		assert.False(t, subject(123, 122))
+	})
 
-func TestDefaultOrd_Eq(t *testing.T) {
-	subject := intOrd.Eq
-	assert.False(t, subject(123, 124))
-	assert.True(t, subject(123, 123))
-	assert.False(t, subject(123, 122))
-}
+	t.Run("Le", func(t *testing.T) {
+		subject := intOrd.Le
+		assert.True(t, subject(123, 124))
+		assert.True(t, subject(123, 123))
+		assert.False(t, subject(123, 122))
+	})
 
-func TestDefaultOrd_Ne(t *testing.T) {
-	subject := intOrd.Ne
-	assert.True(t, subject(123, 124))
-	assert.False(t, subject(123, 123))
-	assert.True(t, subject(123, 122))
+	t.Run("Gt", func(t *testing.T) {
+		subject := intOrd.Gt
+		assert.False(t, subject(123, 124))
+		assert.False(t, subject(123, 123))
+		assert.True(t, subject(123, 122))
+	})
+
+	t.Run("Ge", func(t *testing.T) {
+		subject := intOrd.Ge
+		assert.False(t, subject(123, 124))
+		assert.True(t, subject(123, 123))
+		assert.True(t, subject(123, 122))
+	})
+
+	t.Run("Eq", func(t *testing.T) {
+		subject := intOrd.Eq
+		assert.False(t, subject(123, 124))
+		assert.True(t, subject(123, 123))
+		assert.False(t, subject(123, 122))
+	})
+
+	t.Run("Ne", func(t *testing.T) {
+		subject := intOrd.Ne
+		assert.True(t, subject(123, 124))
+		assert.False(t, subject(123, 123))
+		assert.True(t, subject(123, 122))
+	})
 }

@@ -1,6 +1,9 @@
 package dogs
 
-import "fmt"
+import (
+	"constraints"
+	"fmt"
+)
 
 // Eq defines equality of type T.
 type Eq[T any] interface {
@@ -17,7 +20,7 @@ func (eq *DefaultEq[T]) Equal(x, y T) bool {
 	return eq.EqualImpl(x, y)
 }
 
-// DeriveEq can derive Eq using standard `==` operator.
+// DeriveEq derives Eq using standard `==` operator.
 func DeriveEq[T comparable]() Eq[T] {
 	return derivedEq[T]{}
 }
@@ -56,9 +59,48 @@ type Ord[T any] interface {
 
 }
 
-// TODO: add DeriveOrd
+// DeriveOrd derives Ord using `<`, `<=`, `>`, `>=`, `==`, and `!=`.
+func DeriveOrd[T constraints.Ordered]() Ord[T] {
+	return derivedOrd[T]{}
+}
 
-// DefaultOrd is a default implementation of Ord.
+type derivedOrd[T constraints.Ordered] struct{}
+
+func (derivedOrd[T]) Compare(x, y T) Ordering {
+	if x < y {
+		return LT
+	} else if x == y {
+		return EQ
+	} else {
+		return GT
+	}
+}
+
+func (derivedOrd[T]) Lt(x, y T) bool {
+	return x < y
+}
+
+func (derivedOrd[T]) Le(x, y T) bool {
+	return x <= y
+}
+
+func (derivedOrd[T]) Gt(x, y T) bool {
+	return x > y
+}
+
+func (derivedOrd[T]) Ge(x, y T) bool {
+	return x >= y
+}
+
+func (derivedOrd[T]) Eq(x, y T) bool {
+	return x == y
+}
+
+func (derivedOrd[T]) Ne(x, y T) bool {
+	return x != y
+}
+
+// DefaultOrd is Ord with default implementations.
 type DefaultOrd[T any] struct {
 	CompareImpl func(T, T) Ordering
 }
