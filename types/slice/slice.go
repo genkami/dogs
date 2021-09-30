@@ -5,7 +5,14 @@ import "github.com/genkami/dogs/types/iterator"
 // Slice is a slice with extra methods.
 type Slice[T any] []T
 
-// TODO: FromIterator
+// FromIterator builds a Slice from given Iterator.
+func FromIterator[T any](it iterator.Iterator[T]) Slice[T] {
+	return Slice[T](iterator.Fold[[]T, T](
+		make([]T, 0),
+		it,
+		func(xs []T, x T) []T { return append(xs, x) },
+	))
+}
 
 // Iter returns an Iterator that iterates over given slice.
 func (xs Slice[T]) Iter() iterator.Iterator[T] {

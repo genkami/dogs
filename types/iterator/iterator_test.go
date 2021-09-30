@@ -11,24 +11,6 @@ import (
 	"github.com/genkami/dogs/classes/cmp"
 )
 
-func sliceFromIterator[T any](it iterator.Iterator[T]) []T {
-	return iterator.Fold[[]T, T](
-		make([]T, 0),
-		it,
-		func(xs []T, x T) []T { return append(xs, x) },
-	)
-}
-
-// TODO: remove
-func TestSliceFromIterator(t *testing.T) {
-	subject := func(xs []int) []int {
-		return sliceFromIterator(slice.Slice[int](xs).Iter())
-	}
-	assert.Equal(t, subject([]int{}), []int{})
-	assert.Equal(t, subject([]int{1}), []int{1})
-	assert.Equal(t, subject([]int{1, 2, 3}), []int{1, 2, 3})
-}
-
 func TestFind(t *testing.T) {
 	assertFound := func(name string, xs []int, x int, fn func(int) bool) {
 		t.Run(name, func(t *testing.T) {
@@ -141,7 +123,7 @@ func TestMap(t *testing.T) {
 		mapped := iterator.Map[int, string](it, func(x int) string {
 			return strconv.FormatInt(int64(x), 10)
 		})
-		return sliceFromIterator(mapped)
+		return toSlice(mapped)
 	}
 
 	assert.Equal(t, subject([]int{}), []string{})
@@ -182,7 +164,7 @@ func TestZip(t *testing.T) {
 		xit := slice.Slice[int](xs).Iter()
 		yit := slice.Slice[string](ys).Iter()
 		zipped := iterator.Zip(xit, yit)
-		return sliceFromIterator(zipped)
+		return toSlice(zipped)
 	}
 
 	t.Run("empty", func(t *testing.T) {
@@ -206,7 +188,7 @@ func TestZip(t *testing.T) {
 
 func TestUnfold(t *testing.T) {
 	subject := func(init int, step func(int) (int, int, bool)) []int {
-		return sliceFromIterator[int](iterator.Unfold[int, int](init, step))
+		return toSlice[int](iterator.Unfold[int, int](init, step))
 	}
 
 	f := func(_ int) (int, int, bool) {
@@ -276,4 +258,12 @@ func TestSum(t *testing.T) {
 		assert.Equal(t, subject([]int{1, 2, 3}), 6)
 		assert.Equal(t, subject([]int{1, 10, 100, 1000}), 1111)
 	})
+}
+
+func toSlice[T any](it iterator.Iterator[T]) []T {
+	return iterator.Fold[[]T, T](
+		make([]T, 0),
+		it,
+		func(xs []T, x T) []T { return append(xs, x) },
+	)
 }

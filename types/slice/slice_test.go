@@ -7,6 +7,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestFromIterator(t *testing.T) {
+	subject := func(xs []int) []int {
+		return slice.FromIterator(slice.Slice[int](xs).Iter())
+	}
+	assert.Equal(t, subject([]int{}), []int{})
+	assert.Equal(t, subject([]int{1}), []int{1})
+	assert.Equal(t, subject([]int{1, 2, 3}), []int{1, 2, 3})
+}
+
 func TestSlice_Iter(t *testing.T) {
 	subject := func(xs []string) iterator.Iterator[string] {
 		return slice.Slice[string](xs).Iter()
