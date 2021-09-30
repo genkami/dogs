@@ -3,17 +3,26 @@ package iterator_test
 import (
 	"github.com/genkami/dogs/classes/algebra"
 	"github.com/genkami/dogs/types/iterator"
+	"github.com/genkami/dogs/types/slice"
 	"github.com/genkami/dogs/types/pair"
 	"strconv"
 	"testing"
 	"github.com/stretchr/testify/assert"
-	"github.com/genkami/dogs"
 	"github.com/genkami/dogs/classes/cmp"
 )
 
+func sliceFromIterator[T any](it iterator.Iterator[T]) []T {
+	return iterator.Fold[[]T, T](
+		make([]T, 0),
+		it,
+		func(xs []T, x T) []T { return append(xs, x) },
+	)
+}
+
+// TODO: remove
 func TestSliceFromIterator(t *testing.T) {
 	subject := func(xs []int) []int {
-		return iterator.SliceFromIterator(dogs.Slice[int](xs).Iter())
+		return sliceFromIterator(slice.Slice[int](xs).Iter())
 	}
 	assert.Equal(t, subject([]int{}), []int{})
 	assert.Equal(t, subject([]int{1}), []int{1})
@@ -23,7 +32,7 @@ func TestSliceFromIterator(t *testing.T) {
 func TestFind(t *testing.T) {
 	assertFound := func(name string, xs []int, x int, fn func(int) bool) {
 		t.Run(name, func(t *testing.T) {
-			it := dogs.Slice[int](xs).Iter()
+			it := slice.Slice[int](xs).Iter()
 			found, ok := iterator.Find[int](it, fn)
 			assert.True(t, ok)
 			assert.Equal(t, found, x)
@@ -31,7 +40,7 @@ func TestFind(t *testing.T) {
 	}
 	assertNotFound := func(name string, xs []int, fn func(int) bool) {
 		t.Run(name, func(t *testing.T) {
-			it := dogs.Slice[int](xs).Iter()
+			it := slice.Slice[int](xs).Iter()
 			_, ok := iterator.Find[int](it, fn)
 			assert.False(t, ok)
 		})
@@ -54,14 +63,14 @@ func TestFind(t *testing.T) {
 func TestFindIndex(t *testing.T) {
 	assertFound := func(name string, xs []int, i int, fn func(int) bool) {
 		t.Run(name, func(t *testing.T) {
-			it := dogs.Slice[int](xs).Iter()
+			it := slice.Slice[int](xs).Iter()
 			found := iterator.FindIndex[int](it, fn)
 			assert.Equal(t, found, i)
 		})
 	}
 	assertNotFound := func(name string, xs []int, fn func(int) bool) {
 		t.Run(name, func(t *testing.T) {
-			it := dogs.Slice[int](xs).Iter()
+			it := slice.Slice[int](xs).Iter()
 			found := iterator.FindIndex[int](it, fn)
 			assert.True(t, found < 0)
 		})
@@ -85,7 +94,7 @@ func TestFindElem(t *testing.T) {
 	eq := cmp.DeriveEq[int]()
 	assertFound := func(name string, xs []int, x int) {
 		t.Run(name, func(t *testing.T) {
-			it := dogs.Slice[int](xs).Iter()
+			it := slice.Slice[int](xs).Iter()
 			found, ok := iterator.FindElem[int](it, x, eq)
 			assert.True(t, ok)
 			assert.Equal(t, found, x)
@@ -93,7 +102,7 @@ func TestFindElem(t *testing.T) {
 	}
 	assertNotFound := func(name string, xs []int, x int) {
 		t.Run(name, func(t *testing.T) {
-			it := dogs.Slice[int](xs).Iter()
+			it := slice.Slice[int](xs).Iter()
 			_, ok := iterator.FindElem[int](it, x, eq)
 			assert.False(t, ok)
 		})
@@ -108,14 +117,14 @@ func TestFindElemIndex(t *testing.T) {
 	eq := cmp.DeriveEq[int]()
 	assertFound := func(name string, xs []int, x int, i int) {
 		t.Run(name, func(t *testing.T) {
-			it := dogs.Slice[int](xs).Iter()
+			it := slice.Slice[int](xs).Iter()
 			found := iterator.FindElemIndex[int](it, x, eq)
 			assert.Equal(t, found, i)
 		})
 	}
 	assertNotFound := func(name string, xs []int, x int) {
 		t.Run(name, func(t *testing.T) {
-			it := dogs.Slice[int](xs).Iter()
+			it := slice.Slice[int](xs).Iter()
 			found := iterator.FindElemIndex[int](it, x, eq)
 			assert.True(t, found < 0)
 		})
@@ -128,11 +137,11 @@ func TestFindElemIndex(t *testing.T) {
 
 func TestMap(t *testing.T) {
 	subject := func(xs []int) []string {
-		it := dogs.Slice[int](xs).Iter()
+		it := slice.Slice[int](xs).Iter()
 		mapped := iterator.Map[int, string](it, func(x int) string {
 			return strconv.FormatInt(int64(x), 10)
 		})
-		return iterator.SliceFromIterator(mapped)
+		return sliceFromIterator(mapped)
 	}
 
 	assert.Equal(t, subject([]int{}), []string{})
@@ -146,7 +155,7 @@ func TestFold(t *testing.T) {
 		return x + strconv.FormatInt(int64(y), 10)
 	}
 	subject := func(x string, xs []int) string {
-		it := dogs.Slice[int](xs).Iter()
+		it := slice.Slice[int](xs).Iter()
 		return iterator.Fold[string, int](x, it, add)
 	}
 
@@ -170,10 +179,10 @@ func TestFold(t *testing.T) {
 func TestZip(t *testing.T) {
 	type Pair = pair.Pair[int, string]
 	subject := func(xs []int, ys []string) []Pair {
-		xit := dogs.Slice[int](xs).Iter()
-		yit := dogs.Slice[string](ys).Iter()
+		xit := slice.Slice[int](xs).Iter()
+		yit := slice.Slice[string](ys).Iter()
 		zipped := iterator.Zip(xit, yit)
-		return iterator.SliceFromIterator(zipped)
+		return sliceFromIterator(zipped)
 	}
 
 	t.Run("empty", func(t *testing.T) {
@@ -197,7 +206,7 @@ func TestZip(t *testing.T) {
 
 func TestUnfold(t *testing.T) {
 	subject := func(init int, step func(int) (int, int, bool)) []int {
-		return iterator.SliceFromIterator[int](iterator.Unfold[int, int](init, step))
+		return sliceFromIterator[int](iterator.Unfold[int, int](init, step))
 	}
 
 	f := func(_ int) (int, int, bool) {
@@ -225,7 +234,7 @@ func TestUnfold(t *testing.T) {
 func TestSumWithInit(t *testing.T) {
 	intSemigroup := algebra.DeriveAdditiveSemigroup[int]()
 	subject := func(x int, xs []int) int {
-		return iterator.SumWithInit(x, dogs.Slice[int](xs).Iter(), intSemigroup)
+		return iterator.SumWithInit(x, slice.Slice[int](xs).Iter(), intSemigroup)
 	}
 
 	t.Run("empty", func(t *testing.T) {
@@ -249,7 +258,7 @@ func TestSumWithInit(t *testing.T) {
 func TestSum(t *testing.T) {
 	intMonoid := algebra.DeriveAdditiveMonoid[int]()
 	subject := func(xs []int) int {
-		return iterator.Sum(dogs.Slice[int](xs).Iter(), intMonoid)
+		return iterator.Sum(slice.Slice[int](xs).Iter(), intMonoid)
 	}
 
 	t.Run("empty", func(t *testing.T) {

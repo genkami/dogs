@@ -13,15 +13,6 @@ type Iterator[T any] interface {
 	Next() (T, bool)
 }
 
-// SliceFromIterator converts an Iterator[T] into []T.
-func SliceFromIterator[T any](it Iterator[T]) []T {
-	return Fold[[]T, T](
-		make([]T, 0),
-		it,
-		func(xs []T, x T) []T { return append(xs, x) },
-	)
-}
-
 // Find returns a first element in `it` that satisfies the given predicate `fn`.
 // It returns `false` as a second return value if no elements are found.
 func Find[T any](it Iterator[T], fn func(T) bool) (T, bool) {

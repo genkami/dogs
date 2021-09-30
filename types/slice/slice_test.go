@@ -1,15 +1,15 @@
-package dogs_test
+package slice_test
 
 import (
 	"github.com/genkami/dogs/types/iterator"
+	"github.com/genkami/dogs/types/slice"
 	"testing"
 	"github.com/stretchr/testify/assert"
-	"github.com/genkami/dogs"
 )
 
 func TestSlice_Iter(t *testing.T) {
 	subject := func(xs []string) iterator.Iterator[string] {
-		return dogs.Slice[string](xs).Iter()
+		return slice.Slice[string](xs).Iter()
 	}
 	
 	t.Run("empty", func(t *testing.T) {
@@ -45,7 +45,7 @@ func TestSlice_Iter(t *testing.T) {
 
 // func TestSlice_Sort(t *testing.T) {
 // 	subject := func(xs []int) []int {
-// 		dogs.Slice[int](xs).Sort(intOrd)
+// 		slice.Slice[int](xs).Sort(intOrd)
 // 		return xs
 // 	}
 
