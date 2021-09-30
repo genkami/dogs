@@ -9,7 +9,7 @@ import (
 )
 
 func TestDerivePairEq(t *testing.T) {
-	e := dogs.DerivePairEq(intEq, stringEq)
+	e := dogs.DerivePairEq(dogs.DeriveEq[int](), dogs.DeriveEq[string]())
 	pair := func(x int, y string) dogs.Pair[int, string] {
 		return dogs.Pair[int, string]{x, y}
 	}
@@ -20,7 +20,7 @@ func TestDerivePairEq(t *testing.T) {
 }
 
 func TestDerivePtrPairEq(t *testing.T) {
-	e := dogs.DerivePtrPairEq(intEq, stringEq)
+	e := dogs.DerivePtrPairEq(dogs.DeriveEq[int](), dogs.DeriveEq[string]())
 	pair := func(x int, y string) *dogs.Pair[int, string] {
 		return &dogs.Pair[int, string]{x, y}
 	}
@@ -31,7 +31,7 @@ func TestDerivePtrPairEq(t *testing.T) {
 }
 
 func TestDerivePairOrd(t *testing.T) {
-	subject := dogs.DerivePairOrd(intOrd, stringOrd).Compare
+	subject := dogs.DerivePairOrd(dogs.DeriveOrd[int](), dogs.DeriveOrd[string]()).Compare
 	pair := func(x int, y string) dogs.Pair[int, string] {
 		return dogs.Pair[int, string]{x, y}
 	}
@@ -48,7 +48,7 @@ func TestDerivePairOrd(t *testing.T) {
 }
 
 func TestDerivePtrPairOrd(t *testing.T) {
-	subject := dogs.DerivePtrPairOrd(intOrd, stringOrd).Compare
+	subject := dogs.DerivePtrPairOrd(dogs.DeriveOrd[int](), dogs.DeriveOrd[string]()).Compare
 	pair := func(x int, y string) *dogs.Pair[int, string] {
 		return &dogs.Pair[int, string]{x, y}
 	}

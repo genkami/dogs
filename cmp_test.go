@@ -20,7 +20,17 @@ func TestDeriveOrd(t *testing.T) {
 }
 
 func TestDefaultOrd(t *testing.T) {
-	ord := intOrd
+	var ord dogs.Ord[int] = &dogs.DefaultOrd[int]{
+		CompareImpl: func(x, y int) dogs.Ordering {
+			if x < y {
+				return dogs.LT
+			} else if x == y {
+				return dogs.EQ
+			} else {
+				return dogs.GT
+			}
+		},
+	}
 	testIntOrd(t, ord)
 }
 
