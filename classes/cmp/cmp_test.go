@@ -1,45 +1,45 @@
-package dogs_test
+package cmp_test
 
 import (
-	"github.com/genkami/dogs"
+	"github.com/genkami/dogs/classes/cmp"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestDeriveEq(t *testing.T) {
-	var eq dogs.Eq[int] = dogs.DeriveEq[int]()
+	var eq cmp.Eq[int] = cmp.DeriveEq[int]()
 
 	assert.True(t, eq.Equal(1, 1))
 	assert.False(t, eq.Equal(1, 2))
 }
 
 func TestDeriveOrd(t *testing.T) {
-	ord := dogs.DeriveOrd[int]()
+	ord := cmp.DeriveOrd[int]()
 	testIntOrd(t, ord)
 }
 
 func TestDefaultOrd(t *testing.T) {
-	var ord dogs.Ord[int] = &dogs.DefaultOrd[int]{
-		CompareImpl: func(x, y int) dogs.Ordering {
+	var ord cmp.Ord[int] = &cmp.DefaultOrd[int]{
+		CompareImpl: func(x, y int) cmp.Ordering {
 			if x < y {
-				return dogs.LT
+				return cmp.LT
 			} else if x == y {
-				return dogs.EQ
+				return cmp.EQ
 			} else {
-				return dogs.GT
+				return cmp.GT
 			}
 		},
 	}
 	testIntOrd(t, ord)
 }
 
-func testIntOrd(t *testing.T, intOrd dogs.Ord[int]) {
+func testIntOrd(t *testing.T, intOrd cmp.Ord[int]) {
 	t.Run("Compare", func(t *testing.T) {
 		subject := intOrd.Compare
-		assert.Equal(t, subject(1, 1), dogs.EQ)
-		assert.Equal(t, subject(1, 2), dogs.LT)
-		assert.Equal(t, subject(1, 0), dogs.GT)
+		assert.Equal(t, subject(1, 1), cmp.EQ)
+		assert.Equal(t, subject(1, 2), cmp.LT)
+		assert.Equal(t, subject(1, 0), cmp.GT)
 	})
 
 	t.Run("Lt", func(t *testing.T) {

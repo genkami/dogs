@@ -1,6 +1,7 @@
 package dogs_test
 
 import (
+	"github.com/genkami/dogs/classes/cmp"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,7 +16,7 @@ func TestPair_Values(t *testing.T) {
 }
 
 func TestDerivePairEq(t *testing.T) {
-	e := dogs.DerivePairEq(dogs.DeriveEq[int](), dogs.DeriveEq[string]())
+	e := dogs.DerivePairEq(cmp.DeriveEq[int](), cmp.DeriveEq[string]())
 	pair := func(x int, y string) dogs.Pair[int, string] {
 		return dogs.Pair[int, string]{x, y}
 	}
@@ -26,7 +27,7 @@ func TestDerivePairEq(t *testing.T) {
 }
 
 func TestDerivePtrPairEq(t *testing.T) {
-	e := dogs.DerivePtrPairEq(dogs.DeriveEq[int](), dogs.DeriveEq[string]())
+	e := dogs.DerivePtrPairEq(cmp.DeriveEq[int](), cmp.DeriveEq[string]())
 	pair := func(x int, y string) *dogs.Pair[int, string] {
 		return &dogs.Pair[int, string]{x, y}
 	}
@@ -37,37 +38,37 @@ func TestDerivePtrPairEq(t *testing.T) {
 }
 
 func TestDerivePairOrd(t *testing.T) {
-	subject := dogs.DerivePairOrd(dogs.DeriveOrd[int](), dogs.DeriveOrd[string]()).Compare
+	subject := dogs.DerivePairOrd(cmp.DeriveOrd[int](), cmp.DeriveOrd[string]()).Compare
 	pair := func(x int, y string) dogs.Pair[int, string] {
 		return dogs.Pair[int, string]{x, y}
 	}
 
-	assert.Equal(t, subject(pair(1, "hoge"), pair(1, "hoge")), dogs.EQ)
+	assert.Equal(t, subject(pair(1, "hoge"), pair(1, "hoge")), cmp.EQ)
 	
-	assert.Equal(t, subject(pair(1, "hoga"), pair(1, "hoge")), dogs.LT)
-	assert.Equal(t, subject(pair(0, "hoge"), pair(1, "hoge")), dogs.LT)
-	assert.Equal(t, subject(pair(0, "hoga"), pair(1, "hoge")), dogs.LT)
+	assert.Equal(t, subject(pair(1, "hoga"), pair(1, "hoge")), cmp.LT)
+	assert.Equal(t, subject(pair(0, "hoge"), pair(1, "hoge")), cmp.LT)
+	assert.Equal(t, subject(pair(0, "hoga"), pair(1, "hoge")), cmp.LT)
 
-	assert.Equal(t, subject(pair(1, "hogz"), pair(1, "hoge")), dogs.GT)
-	assert.Equal(t, subject(pair(2, "hoge"), pair(1, "hoge")), dogs.GT)
-	assert.Equal(t, subject(pair(2, "hogz"), pair(1, "hoge")), dogs.GT)
+	assert.Equal(t, subject(pair(1, "hogz"), pair(1, "hoge")), cmp.GT)
+	assert.Equal(t, subject(pair(2, "hoge"), pair(1, "hoge")), cmp.GT)
+	assert.Equal(t, subject(pair(2, "hogz"), pair(1, "hoge")), cmp.GT)
 }
 
 func TestDerivePtrPairOrd(t *testing.T) {
-	subject := dogs.DerivePtrPairOrd(dogs.DeriveOrd[int](), dogs.DeriveOrd[string]()).Compare
+	subject := dogs.DerivePtrPairOrd(cmp.DeriveOrd[int](), cmp.DeriveOrd[string]()).Compare
 	pair := func(x int, y string) *dogs.Pair[int, string] {
 		return &dogs.Pair[int, string]{x, y}
 	}
 
-	assert.Equal(t, subject(pair(1, "hoge"), pair(1, "hoge")), dogs.EQ)
+	assert.Equal(t, subject(pair(1, "hoge"), pair(1, "hoge")), cmp.EQ)
 	
-	assert.Equal(t, subject(pair(1, "hoga"), pair(1, "hoge")), dogs.LT)
-	assert.Equal(t, subject(pair(0, "hoge"), pair(1, "hoge")), dogs.LT)
-	assert.Equal(t, subject(pair(0, "hoga"), pair(1, "hoge")), dogs.LT)
+	assert.Equal(t, subject(pair(1, "hoga"), pair(1, "hoge")), cmp.LT)
+	assert.Equal(t, subject(pair(0, "hoge"), pair(1, "hoge")), cmp.LT)
+	assert.Equal(t, subject(pair(0, "hoga"), pair(1, "hoge")), cmp.LT)
 
-	assert.Equal(t, subject(pair(1, "hogz"), pair(1, "hoge")), dogs.GT)
-	assert.Equal(t, subject(pair(2, "hoge"), pair(1, "hoge")), dogs.GT)
-	assert.Equal(t, subject(pair(2, "hogz"), pair(1, "hoge")), dogs.GT)
+	assert.Equal(t, subject(pair(1, "hogz"), pair(1, "hoge")), cmp.GT)
+	assert.Equal(t, subject(pair(2, "hoge"), pair(1, "hoge")), cmp.GT)
+	assert.Equal(t, subject(pair(2, "hogz"), pair(1, "hoge")), cmp.GT)
 }
 
 func TestDerivePairSemigroup(t *testing.T) {

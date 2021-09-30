@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/genkami/dogs"
+	"github.com/genkami/dogs/classes/cmp"
 )
 
 func TestSliceFromIterator(t *testing.T) {
@@ -80,7 +81,7 @@ func TestFindIndex(t *testing.T) {
 }
 
 func TestFindElem(t *testing.T) {
-	eq := dogs.DeriveEq[int]()
+	eq := cmp.DeriveEq[int]()
 	assertFound := func(name string, xs []int, x int) {
 		t.Run(name, func(t *testing.T) {
 			it := dogs.Slice[int](xs).Iter()
@@ -103,7 +104,7 @@ func TestFindElem(t *testing.T) {
 }
 
 func TestFindElemIndex(t *testing.T) {
-	eq := dogs.DeriveEq[int]()
+	eq := cmp.DeriveEq[int]()
 	assertFound := func(name string, xs []int, x int, i int) {
 		t.Run(name, func(t *testing.T) {
 			it := dogs.Slice[int](xs).Iter()

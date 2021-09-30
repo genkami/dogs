@@ -1,6 +1,9 @@
 package dogs
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/genkami/dogs/classes/cmp"
+)
 
 // Pair is a pair of two values.
 type Pair[T, U any] struct {
@@ -14,8 +17,8 @@ func (p Pair[T, U]) Values() (T, U) {
 }
 
 // DerivePairEq derives Eq[Pair[T, U]] from Eq[T] and Eq[U].
-func DerivePairEq[T, U any](et Eq[T], eu Eq[U]) Eq[Pair[T, U]] {
-	return &DefaultEq[Pair[T, U]]{
+func DerivePairEq[T, U any](et cmp.Eq[T], eu cmp.Eq[U]) cmp.Eq[Pair[T, U]] {
+	return &cmp.DefaultEq[Pair[T, U]]{
 		EqualImpl: func(p, q Pair[T, U]) bool {
 			return et.Equal(p.First, q.First) && eu.Equal(p.Second, q.Second)
 		},
@@ -23,8 +26,8 @@ func DerivePairEq[T, U any](et Eq[T], eu Eq[U]) Eq[Pair[T, U]] {
 }
 
 // DerivePtrPairEq derives Eq[*Pair[T, U]] from Eq[T] and Eq[U].
-func DerivePtrPairEq[T, U any](et Eq[T], eu Eq[U]) Eq[*Pair[T, U]] {
-	return &DefaultEq[*Pair[T, U]]{
+func DerivePtrPairEq[T, U any](et cmp.Eq[T], eu cmp.Eq[U]) cmp.Eq[*Pair[T, U]] {
+	return &cmp.DefaultEq[*Pair[T, U]]{
 		EqualImpl: func(p, q *Pair[T, U]) bool {
 			return et.Equal(p.First, q.First) && eu.Equal(p.Second, q.Second)
 		},
@@ -32,17 +35,17 @@ func DerivePtrPairEq[T, U any](et Eq[T], eu Eq[U]) Eq[*Pair[T, U]] {
 }
 
 // DerivePairOrd derives Ord[Pair[T, U]] from Ord[T] and Ord[U].
-func DerivePairOrd[T, U any](ot Ord[T], ou Ord[U]) Ord[Pair[T, U]] {
-	return &DefaultOrd[Pair[T, U]]{
-		CompareImpl: func(p, q Pair[T, U]) Ordering {
+func DerivePairOrd[T, U any](ot cmp.Ord[T], ou cmp.Ord[U]) cmp.Ord[Pair[T, U]] {
+	return &cmp.DefaultOrd[Pair[T, U]]{
+		CompareImpl: func(p, q Pair[T, U]) cmp.Ordering {
 			v := ot.Compare(p.First, q.First)
 			switch v {
-			case LT:
-				return LT
-			case EQ:
+			case cmp.LT:
+				return cmp.LT
+			case cmp.EQ:
 				return ou.Compare(p.Second, q.Second)
-			case GT:
-				return GT
+			case cmp.GT:
+				return cmp.GT
 			}
 			panic(fmt.Errorf("unknown Ordering: %d", v))
 		},
@@ -50,17 +53,17 @@ func DerivePairOrd[T, U any](ot Ord[T], ou Ord[U]) Ord[Pair[T, U]] {
 }
 
 // DerivePtrPairOrd derives Ord[*Pair[T, U]] from Ord[T] and Ord[U].
-func DerivePtrPairOrd[T, U any](ot Ord[T], ou Ord[U]) Ord[*Pair[T, U]] {
-	return &DefaultOrd[*Pair[T, U]]{
-		CompareImpl: func(p, q *Pair[T, U]) Ordering {
+func DerivePtrPairOrd[T, U any](ot cmp.Ord[T], ou cmp.Ord[U]) cmp.Ord[*Pair[T, U]] {
+	return &cmp.DefaultOrd[*Pair[T, U]]{
+		CompareImpl: func(p, q *Pair[T, U]) cmp.Ordering {
 			v := ot.Compare(p.First, q.First)
 			switch v {
-			case LT:
-				return LT
-			case EQ:
+			case cmp.LT:
+				return cmp.LT
+			case cmp.EQ:
 				return ou.Compare(p.Second, q.Second)
-			case GT:
-				return GT
+			case cmp.GT:
+				return cmp.GT
 			}
 			panic(fmt.Errorf("unknown Ordering: %d", v))
 		},
