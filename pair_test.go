@@ -71,7 +71,10 @@ func TestDerivePtrPairOrd(t *testing.T) {
 }
 
 func TestDerivePairSemigroup(t *testing.T) {
-	s := dogs.DerivePairSemigroup(intSemigroup, stringSemigroup)
+	s := dogs.DerivePairSemigroup(
+		dogs.DeriveAdditiveSemigroup[int](),
+		dogs.DeriveAdditiveSemigroup[string](),
+	)
 	pair := func(x int, y string) dogs.Pair[int, string] {
 		return dogs.Pair[int, string]{x, y}
 	}
@@ -79,7 +82,10 @@ func TestDerivePairSemigroup(t *testing.T) {
 }
 
 func TestDerivePtrPairSemigroup(t *testing.T) {
-	s := dogs.DerivePtrPairSemigroup(intSemigroup, stringSemigroup)
+	s := dogs.DerivePtrPairSemigroup(
+		dogs.DeriveAdditiveSemigroup[int](),
+		dogs.DeriveAdditiveSemigroup[string](),
+	)
 	pair := func(x int, y string) *dogs.Pair[int, string] {
 		return &dogs.Pair[int, string]{x, y}
 	}
@@ -87,7 +93,10 @@ func TestDerivePtrPairSemigroup(t *testing.T) {
 }
 
 func TestDerivePairMonoid(t *testing.T) {
-	m := dogs.DerivePairMonoid(intMonoid, stringMonoid)
+	m := dogs.DerivePairMonoid(
+		dogs.DeriveAdditiveMonoid[int](),
+		dogs.DeriveAdditiveMonoid[string](),
+	)
 	pair := func(x int, y string) dogs.Pair[int, string] {
 		return dogs.Pair[int, string]{x, y}
 	}
@@ -96,7 +105,10 @@ func TestDerivePairMonoid(t *testing.T) {
 }
 
 func TestDerivePtrPairMonoid(t *testing.T) {
-	m := dogs.DerivePtrPairMonoid(intMonoid, stringMonoid)
+	m := dogs.DerivePtrPairMonoid(
+		dogs.DeriveAdditiveMonoid[int](),
+		dogs.DeriveAdditiveMonoid[string](),
+	)
 	pair := func(x int, y string) *dogs.Pair[int, string] {
 		return &dogs.Pair[int, string]{x, y}
 	}
