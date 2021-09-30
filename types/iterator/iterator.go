@@ -1,4 +1,4 @@
-package dogs
+package iterator
 
 import (
 	"github.com/genkami/dogs/classes/algebra"

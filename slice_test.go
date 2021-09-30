@@ -1,14 +1,14 @@
 package dogs_test
 
 import (
+	"github.com/genkami/dogs/types/iterator"
 	"testing"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/genkami/dogs"
 )
 
 func TestSlice_Iter(t *testing.T) {
-	subject := func(xs []string) dogs.Iterator[string] {
+	subject := func(xs []string) iterator.Iterator[string] {
 		return dogs.Slice[string](xs).Iter()
 	}
 	

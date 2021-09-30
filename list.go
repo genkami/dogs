@@ -1,5 +1,7 @@
 package dogs
 
+import "github.com/genkami/dogs/types/iterator"
+
 type List[T any] struct {
 	Head T
 	Tail *List[T]
@@ -13,7 +15,7 @@ func NewList[T any](xs ...T) *List[T] {
 	return list
 }
 
-func (xs *List[T]) Iter() Iterator[T] {
+func (xs *List[T]) Iter() iterator.Iterator[T] {
 	return &listIterator[T]{
 		cur: xs,
 	}

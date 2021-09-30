@@ -1,10 +1,12 @@
 package dogs
 
+import "github.com/genkami/dogs/types/iterator"
+
 // Slice is a slice with extra methods.
 type Slice[T any] []T
 
 // Iter returns an Iterator that iterates over given slice.
-func (xs Slice[T]) Iter() Iterator[T] {
+func (xs Slice[T]) Iter() iterator.Iterator[T] {
 	return &sliceIterator[T]{
 		xs: ([]T)(xs),
 		next: 0,
