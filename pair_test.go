@@ -8,6 +8,12 @@ import (
 	"github.com/genkami/dogs"
 )
 
+func TestPair_Values(t *testing.T) {
+	a, b := dogs.Pair[int, string]{123, "abc"}.Values()
+	assert.Equal(t, a, 123)
+	assert.Equal(t, b, "abc")
+}
+
 func TestDerivePairEq(t *testing.T) {
 	e := dogs.DerivePairEq(dogs.DeriveEq[int](), dogs.DeriveEq[string]())
 	pair := func(x int, y string) dogs.Pair[int, string] {

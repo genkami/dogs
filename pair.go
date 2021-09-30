@@ -8,6 +8,11 @@ type Pair[T, U any] struct {
 	Second U
 }
 
+// Values returns its values.
+func (p Pair[T, U]) Values() (T, U) {
+	return p.First, p.Second
+}
+
 // DerivePairEq derives Eq[Pair[T, U]] from Eq[T] and Eq[U].
 func DerivePairEq[T, U any](et Eq[T], eu Eq[U]) Eq[Pair[T, U]] {
 	return &DefaultEq[Pair[T, U]]{
