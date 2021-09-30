@@ -1,29 +1,27 @@
-package dogs_test
+package list_test
 
 import (
 	"testing"
-
 	"github.com/stretchr/testify/assert"
-
-	"github.com/genkami/dogs"
+	"github.com/genkami/dogs/types/list"
 )
 
 func TestNewList(t *testing.T) {
-	assert.Equal(t, dogs.NewList[int](), (*dogs.List[int])(nil))
-	assert.Equal(t, dogs.NewList[int](1), &dogs.List[int]{1, nil})
-	assert.Equal(t, dogs.NewList[int](1, 2), &dogs.List[int]{1, &dogs.List[int]{2, nil}})
-	assert.Equal(t, dogs.NewList[int](1, 2, 3), &dogs.List[int]{1, &dogs.List[int]{2, &dogs.List[int]{3, nil}}})
+	assert.Equal(t, list.NewList[int](), (*list.List[int])(nil))
+	assert.Equal(t, list.NewList[int](1), &list.List[int]{1, nil})
+	assert.Equal(t, list.NewList[int](1, 2), &list.List[int]{1, &list.List[int]{2, nil}})
+	assert.Equal(t, list.NewList[int](1, 2, 3), &list.List[int]{1, &list.List[int]{2, &list.List[int]{3, nil}}})
 }
 
 func TestList_Iter(t *testing.T) {
 	t.Run("empty", func(t *testing.T) {
-		it := dogs.NewList[string]().Iter()
+		it := list.NewList[string]().Iter()
 		_, ok := it.Next()
 		assert.False(t, ok)
 	})
 
 	t.Run("singleton", func(t *testing.T) {
-		it := dogs.NewList[string]("hoge").Iter()
+		it := list.NewList[string]("hoge").Iter()
 		x, ok := it.Next()
 		assert.True(t, ok)
 		assert.Equal(t, x, "hoge")
@@ -32,7 +30,7 @@ func TestList_Iter(t *testing.T) {
 	})
 
 	t.Run("multiple elements", func(t *testing.T) {
-		it := dogs.NewList[string]("hoge", "fuga", "foo").Iter()
+		it := list.NewList[string]("hoge", "fuga", "foo").Iter()
 		x, ok := it.Next()
 		assert.True(t, ok)
 		assert.Equal(t, x, "hoge")

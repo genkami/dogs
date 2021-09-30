@@ -1,4 +1,4 @@
-package dogs
+package list
 
 import "github.com/genkami/dogs/types/iterator"
 
