@@ -11,3 +11,9 @@ func TestDeriveAdditiveSemigroup(t *testing.T) {
 
 	assert.Equal(t, s.Combine(1, 2), 3)
 }
+
+func TestDeriveMultiplicativeSemigroup(t *testing.T) {
+	s := dogs.DeriveMultiplicativeSemigroup[int]()
+
+	assert.Equal(t, s.Combine(2, 3), 6)
+}

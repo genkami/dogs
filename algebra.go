@@ -7,6 +7,11 @@ type Additive interface {
 	constraints.Integer | constraints.Float | constraints.Complex | ~string
 }
 
+// Multiplicative is a type that can use `*` operator.
+type Multiplicative interface {
+	constraints.Integer | constraints.Float | constraints.Complex
+}
+
 // Semigroup is a set of type `T` and its associative binary operation `Combine(T, T) T`
 type Semigroup[T any] interface {
 	Combine(T, T) T
@@ -21,6 +26,17 @@ type additiveSemigroup[T Additive] struct {}
 
 func (additiveSemigroup[T]) Combine(x, y T) T {
 	return x + y
+}
+
+// DeriveMultiplicativeSemigroup derives Semigroup using `*` operator.
+func DeriveMultiplicativeSemigroup[T Multiplicative]() Semigroup[T] {
+	return multiplicativeSemigroup[T]{}
+}
+
+type multiplicativeSemigroup[T Multiplicative] struct{}
+
+func (multiplicativeSemigroup[T]) Combine(x, y T) T {
+	return x * y
 }
 
 // DefaultSemigroup is a default implementation of Semigroup.
