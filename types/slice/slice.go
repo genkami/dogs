@@ -15,6 +15,7 @@ func FromIterator[T any](it iterator.Iterator[T]) Slice[T] {
 }
 
 // Iter returns an Iterator that iterates over given slice.
+// TODO: this should be slice.Iter(xs)
 func (xs Slice[T]) Iter() iterator.Iterator[T] {
 	return &sliceIterator[T]{
 		xs: ([]T)(xs),
@@ -40,6 +41,7 @@ func (it *sliceIterator[T]) Next() (T, bool) {
 
 // Sort sorts `xs` using `Ord`.
 // TODO: ./slice_test.go:58:54: internal compiler error: NewMethodType with type parameters in signature FUNC-method(*struct {}) func(dogs.T₆₄, dogs.T₆₄) bool
+// TODO: this should be slice.Sort(xs, o)
 // func (xs Slice[T]) Sort(o Ord[T]) {
 // 	sort.Slice(([]T)(xs), func(i, j int) bool {
 // 		return o.Lt(xs[i], xs[j])
