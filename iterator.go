@@ -16,6 +16,21 @@ func SliceFromIterator[T any](it Iterator[T]) []T {
 	)
 }
 
+// Find returns a first element in `it` that satisfies the given predicate `fn`.
+// It returns `false` as a second return value if no elements are found.
+func Find[T any](it Iterator[T], fn func(T) bool) (T, bool) {
+	for {
+		x, ok := it.Next()
+		if !ok {
+			var zero T
+			return zero, false
+		}
+		if fn(x) {
+			return x, true
+		}
+	}
+}
+
 // TODO: Find(it, fn)
 // TODO: FindIndex(it, fn)
 // TODO: FindElem(it, e, eq)

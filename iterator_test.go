@@ -18,6 +18,37 @@ func TestSliceFromIterator(t *testing.T) {
 	assert.Equal(t, subject([]int{1, 2, 3}), []int{1, 2, 3})
 }
 
+func TestFind(t *testing.T) {
+	assertFound := func(name string, xs []int, x int, fn func(int) bool) {
+		t.Run(name, func(t *testing.T) {
+			it := dogs.Slice[int](xs).Iter()
+			found, ok := dogs.Find[int](it, fn)
+			assert.True(t, ok)
+			assert.Equal(t, found, x)
+		})
+	}
+	assertNotFound := func(name string, xs []int, fn func(int) bool) {
+		t.Run(name, func(t *testing.T) {
+			it := dogs.Slice[int](xs).Iter()
+			_, ok := dogs.Find[int](it, fn)
+			assert.False(t, ok)
+		})
+	}
+
+	assertFound("ok", []int{1, 2, 3}, 3, func(x int) bool {
+		return x == 3
+	})
+	assertFound("first", []int{1, 2, 3}, 1, func(x int) bool {
+		return true
+	})
+	assertNotFound("not found", []int{1, 2, 3}, func(x int) bool {
+		return x > 5
+	})
+	assertNotFound("empty", []int{}, func(x int) bool {
+		return true
+	})
+}
+
 func TestMap(t *testing.T) {
 	subject := func(xs []int) []string {
 		it := dogs.Slice[int](xs).Iter()
