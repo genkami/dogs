@@ -3,6 +3,7 @@ package dogs
 import (
 	"fmt"
 	"github.com/genkami/dogs/classes/cmp"
+	"github.com/genkami/dogs/classes/algebra"
 )
 
 // Pair is a pair of two values.
@@ -70,9 +71,9 @@ func DerivePtrPairOrd[T, U any](ot cmp.Ord[T], ou cmp.Ord[U]) cmp.Ord[*Pair[T, U
 	}
 }
 
-// DerivePairSemigroup derives Semigroup[Pair[T, U]] from Semigroup[T] and Semigroup[U].
-func DerivePairSemigroup[T, U any](st Semigroup[T], su Semigroup[U]) Semigroup[Pair[T, U]] {
-	return &DefaultSemigroup[Pair[T, U]]{
+// DerivePairSemigroup derives algebra.Semigroup[Pair[T, U]] from algebra.Semigroup[T] and algebra.Semigroup[U].
+func DerivePairSemigroup[T, U any](st algebra.Semigroup[T], su algebra.Semigroup[U]) algebra.Semigroup[Pair[T, U]] {
+	return &algebra.DefaultSemigroup[Pair[T, U]]{
 		CombineImpl: func(p, q Pair[T, U]) Pair[T, U] {
 			return Pair[T, U]{
 				First: st.Combine(p.First, q.First),
@@ -82,9 +83,9 @@ func DerivePairSemigroup[T, U any](st Semigroup[T], su Semigroup[U]) Semigroup[P
 	}
 }
 
-// DerivePtrPairSemigroup derives Semigroup[*Pair[T, U]] from Semigroup[T] and Semigroup[U].
-func DerivePtrPairSemigroup[T, U any](st Semigroup[T], su Semigroup[U]) Semigroup[*Pair[T, U]] {
-	return &DefaultSemigroup[*Pair[T, U]]{
+// DerivePtrPairSemigroup derives algebra.Semigroup[*Pair[T, U]] from algebra.Semigroup[T] and algebra.Semigroup[U].
+func DerivePtrPairSemigroup[T, U any](st algebra.Semigroup[T], su algebra.Semigroup[U]) algebra.Semigroup[*Pair[T, U]] {
+	return &algebra.DefaultSemigroup[*Pair[T, U]]{
 		CombineImpl: func(p, q *Pair[T, U]) *Pair[T, U] {
 			return &Pair[T, U]{
 				First: st.Combine(p.First, q.First),
@@ -95,10 +96,10 @@ func DerivePtrPairSemigroup[T, U any](st Semigroup[T], su Semigroup[U]) Semigrou
 }
 
 // DerivePairMonoid derives Monoid[Pair[T, U]] from Monoid[T] and Monoid[U].
-func DerivePairMonoid[T, U any](mt Monoid[T], mu Monoid[U]) Monoid[Pair[T, U]] {
-	var st Semigroup[T] = mt
-	var su Semigroup[U] = mu
-	return &DefaultMonoid[Pair[T, U]]{
+func DerivePairMonoid[T, U any](mt algebra.Monoid[T], mu algebra.Monoid[U]) algebra.Monoid[Pair[T, U]] {
+	var st algebra.Semigroup[T] = mt
+	var su algebra.Semigroup[U] = mu
+	return &algebra.DefaultMonoid[Pair[T, U]]{
 		Semigroup: DerivePairSemigroup[T, U](st, su),
 		EmptyImpl: func() Pair[T, U] {
 			return Pair[T, U]{
@@ -110,10 +111,10 @@ func DerivePairMonoid[T, U any](mt Monoid[T], mu Monoid[U]) Monoid[Pair[T, U]] {
 }
 
 // DerivePtrPairMonoid derives Monoid[Pair[T, U]] from Monoid[T] and Monoid[U].
-func DerivePtrPairMonoid[T, U any](mt Monoid[T], mu Monoid[U]) Monoid[*Pair[T, U]] {
-	var st Semigroup[T] = mt
-	var su Semigroup[U] = mu
-	return &DefaultMonoid[*Pair[T, U]]{
+func DerivePtrPairMonoid[T, U any](mt algebra.Monoid[T], mu algebra.Monoid[U]) algebra.Monoid[*Pair[T, U]] {
+	var st algebra.Semigroup[T] = mt
+	var su algebra.Semigroup[U] = mu
+	return &algebra.DefaultMonoid[*Pair[T, U]]{
 		Semigroup: DerivePtrPairSemigroup[T, U](st, su),
 		EmptyImpl: func() *Pair[T, U]{
 			return &Pair[T, U]{

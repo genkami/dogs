@@ -1,11 +1,10 @@
 package dogs_test
 
 import (
+	"github.com/genkami/dogs/classes/algebra"
 	"strconv"
 	"testing"
-
 	"github.com/stretchr/testify/assert"
-
 	"github.com/genkami/dogs"
 	"github.com/genkami/dogs/classes/cmp"
 )
@@ -222,7 +221,7 @@ func TestUnfold(t *testing.T) {
 }
 
 func TestSumWithInit(t *testing.T) {
-	intSemigroup := dogs.DeriveAdditiveSemigroup[int]()
+	intSemigroup := algebra.DeriveAdditiveSemigroup[int]()
 	subject := func(x int, xs []int) int {
 		return dogs.SumWithInit(x, dogs.Slice[int](xs).Iter(), intSemigroup)
 	}
@@ -246,7 +245,7 @@ func TestSumWithInit(t *testing.T) {
 }
 
 func TestSum(t *testing.T) {
-	intMonoid := dogs.DeriveAdditiveMonoid[int]()
+	intMonoid := algebra.DeriveAdditiveMonoid[int]()
 	subject := func(xs []int) int {
 		return dogs.Sum(dogs.Slice[int](xs).Iter(), intMonoid)
 	}

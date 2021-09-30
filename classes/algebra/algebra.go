@@ -1,4 +1,4 @@
-package dogs
+package algebra
 
 import "constraints"
 

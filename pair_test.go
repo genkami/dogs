@@ -1,11 +1,10 @@
 package dogs_test
 
 import (
+	"github.com/genkami/dogs/classes/algebra"
 	"github.com/genkami/dogs/classes/cmp"
 	"testing"
-
 	"github.com/stretchr/testify/assert"
-
 	"github.com/genkami/dogs"
 )
 
@@ -73,8 +72,8 @@ func TestDerivePtrPairOrd(t *testing.T) {
 
 func TestDerivePairSemigroup(t *testing.T) {
 	s := dogs.DerivePairSemigroup(
-		dogs.DeriveAdditiveSemigroup[int](),
-		dogs.DeriveAdditiveSemigroup[string](),
+		algebra.DeriveAdditiveSemigroup[int](),
+		algebra.DeriveAdditiveSemigroup[string](),
 	)
 	pair := func(x int, y string) dogs.Pair[int, string] {
 		return dogs.Pair[int, string]{x, y}
@@ -84,8 +83,8 @@ func TestDerivePairSemigroup(t *testing.T) {
 
 func TestDerivePtrPairSemigroup(t *testing.T) {
 	s := dogs.DerivePtrPairSemigroup(
-		dogs.DeriveAdditiveSemigroup[int](),
-		dogs.DeriveAdditiveSemigroup[string](),
+		algebra.DeriveAdditiveSemigroup[int](),
+		algebra.DeriveAdditiveSemigroup[string](),
 	)
 	pair := func(x int, y string) *dogs.Pair[int, string] {
 		return &dogs.Pair[int, string]{x, y}
@@ -95,8 +94,8 @@ func TestDerivePtrPairSemigroup(t *testing.T) {
 
 func TestDerivePairMonoid(t *testing.T) {
 	m := dogs.DerivePairMonoid(
-		dogs.DeriveAdditiveMonoid[int](),
-		dogs.DeriveAdditiveMonoid[string](),
+		algebra.DeriveAdditiveMonoid[int](),
+		algebra.DeriveAdditiveMonoid[string](),
 	)
 	pair := func(x int, y string) dogs.Pair[int, string] {
 		return dogs.Pair[int, string]{x, y}
@@ -107,8 +106,8 @@ func TestDerivePairMonoid(t *testing.T) {
 
 func TestDerivePtrPairMonoid(t *testing.T) {
 	m := dogs.DerivePtrPairMonoid(
-		dogs.DeriveAdditiveMonoid[int](),
-		dogs.DeriveAdditiveMonoid[string](),
+		algebra.DeriveAdditiveMonoid[int](),
+		algebra.DeriveAdditiveMonoid[string](),
 	)
 	pair := func(x int, y string) *dogs.Pair[int, string] {
 		return &dogs.Pair[int, string]{x, y}

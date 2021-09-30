@@ -1,6 +1,9 @@
 package dogs
 
-import "github.com/genkami/dogs/classes/cmp"
+import (
+	"github.com/genkami/dogs/classes/algebra"
+	"github.com/genkami/dogs/classes/cmp"
+)
 
 // Iterable iterates over some set of elements.
 type Iterator[T any] interface {
@@ -160,14 +163,14 @@ func (it *unfoldIterator[T, U]) Next() (U, bool) {
 // TODO: EnumFromTo
 
 // SumWithInit sums up `init` and all values in `it`.
-func SumWithInit[T any](init T, it Iterator[T], s Semigroup[T]) T {
+func SumWithInit[T any](init T, it Iterator[T], s algebra.Semigroup[T]) T {
 	return Fold[T, T](init, it, s.Combine)
 }
 
 // Sum sums up all values in `it`.
 // It returns `Empty()` when `it` is empty.
-func Sum[T any](it Iterator[T], m Monoid[T]) T {
-	var s Semigroup[T] = m
+func Sum[T any](it Iterator[T], m algebra.Monoid[T]) T {
+	var s algebra.Semigroup[T] = m
 	return SumWithInit(m.Empty(), it, s)
 }
 
