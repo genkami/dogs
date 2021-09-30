@@ -31,8 +31,20 @@ func Find[T any](it Iterator[T], fn func(T) bool) (T, bool) {
 	}
 }
 
-// TODO: Find(it, fn)
-// TODO: FindIndex(it, fn)
+// Find returns a first index of an element in `it` that satisfies the given predicate `fn`.
+// It returns negative value if no elements are found.
+func FindIndex[T any](it Iterator[T], fn func(T) bool) int {
+	for i := 0; ; i++ {
+		x, ok := it.Next()
+		if !ok {
+			return -1
+		}
+		if fn(x) {
+			return i
+		}
+	}
+}
+
 // TODO: FindElem(it, e, eq)
 // TODO: FindElemIndex(it, e, eq)
 // TODO: Take(it, n)

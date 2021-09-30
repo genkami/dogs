@@ -49,6 +49,36 @@ func TestFind(t *testing.T) {
 	})
 }
 
+func TestFindIndex(t *testing.T) {
+	assertFound := func(name string, xs []int, i int, fn func(int) bool) {
+		t.Run(name, func(t *testing.T) {
+			it := dogs.Slice[int](xs).Iter()
+			found := dogs.FindIndex[int](it, fn)
+			assert.Equal(t, found, i)
+		})
+	}
+	assertNotFound := func(name string, xs []int, fn func(int) bool) {
+		t.Run(name, func(t *testing.T) {
+			it := dogs.Slice[int](xs).Iter()
+			found := dogs.FindIndex[int](it, fn)
+			assert.True(t, found < 0)
+		})
+	}
+
+	assertFound("ok", []int{1, 2, 3}, 2, func(x int) bool {
+		return x == 3
+	})
+	assertFound("first", []int{1, 2, 3}, 0, func(x int) bool {
+		return true
+	})
+	assertNotFound("not found", []int{1, 2, 3}, func(x int) bool {
+		return x > 5
+	})
+	assertNotFound("empty", []int{}, func(x int) bool {
+		return true
+	})
+}
+
 func TestMap(t *testing.T) {
 	subject := func(xs []int) []string {
 		it := dogs.Slice[int](xs).Iter()
