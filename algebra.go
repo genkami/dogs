@@ -69,6 +69,21 @@ func (additiveMonoid[T]) Empty() (zero T) {
 	return
 }
 
+// DeriveMultiplicativeMonoid derives Monoid using `*` and `1`.
+func DeriveMultiplicativeMonoid[T Multiplicative]() Monoid[T] {
+	return multiplicativeMonoid[T]{}
+}
+
+type multiplicativeMonoid[T Multiplicative] struct{}
+
+func (multiplicativeMonoid[T]) Combine(x, y T) T {
+	return x * y
+}
+
+func (multiplicativeMonoid[T]) Empty() T {
+	return 1
+}
+
 // DefaultMonoid is a default implementation of Monoid.
 type DefaultMonoid[T any] struct {
 	Semigroup[T]
