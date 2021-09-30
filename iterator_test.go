@@ -87,6 +87,33 @@ func TestZip(t *testing.T) {
 	})
 }
 
+func TestUnfold(t *testing.T) {
+	subject := func(init int, step func(int) (int, int, bool)) []int {
+		return dogs.SliceFromIterator[int](dogs.Unfold[int, int](init, step))
+	}
+
+	f := func(_ int) (int, int, bool) {
+		return 0, 0, false
+	}
+	assert.Equal(t, subject(0, f), []int{})
+
+	f = func(s int) (int, int, bool) {
+		if 5 < s {
+			return 0, 0, false
+		}
+		return s + 1, s, true
+	}
+	assert.Equal(t, subject(0, f), []int{0, 1, 2, 3, 4, 5})
+
+	f = func(s int) (int, int, bool) {
+		if 3 < s {
+			return 0, 0, false
+		}
+		return s + 1, s * 2, true
+	}
+	assert.Equal(t, subject(0, f), []int{0, 2, 4, 6})
+}
+
 func TestSumWithInit(t *testing.T) {
 	subject := func(x int, xs []int) int {
 		return dogs.SumWithInit(x, dogs.Slice[int](xs).Iter(), intSemigroup)
