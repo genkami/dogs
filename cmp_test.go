@@ -1,10 +1,18 @@
 package dogs_test
 
 import (
+	"github.com/genkami/dogs"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+func TestDeriveEq(t *testing.T) {
+	var eq dogs.Eq[int] = dogs.DeriveEq[int]()
+
+	assert.True(t, eq.Equal(1, 1))
+	assert.False(t, eq.Equal(1, 2))
+}
 
 func TestDefaultOrd_Lt(t *testing.T) {
 	subject := intOrd.Lt

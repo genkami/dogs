@@ -8,7 +8,7 @@ type Eq[T any] interface {
 	Equal(T, T) bool
 }
 
-// DefaultEq is a default implementation of Eq.
+// DefaultEq is Eq with default implementations.
 type DefaultEq[T any] struct {
 	EqualImpl func(T, T) bool
 }
@@ -17,7 +17,16 @@ func (eq *DefaultEq[T]) Equal(x, y T) bool {
 	return eq.EqualImpl(x, y)
 }
 
-// TODO: add DeriveEq
+// DeriveEq can derive Eq using standard `==` operator.
+func DeriveEq[T comparable]() Eq[T] {
+	return derivedEq[T]{}
+}
+
+type derivedEq[T comparable] struct{}
+
+func (derivedEq[T]) Equal(x, y T) bool {
+	return x == y
+}
 
 // Ord defines order of type T.
 type Ord[T any] interface {
