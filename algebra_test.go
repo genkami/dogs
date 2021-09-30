@@ -7,13 +7,29 @@ import (
 )
 
 func TestDeriveAdditiveSemigroup(t *testing.T) {
-	s := dogs.DeriveAdditiveSemigroup[int]()
+	s1 := dogs.DeriveAdditiveSemigroup[int]()
+	assert.Equal(t, s1.Combine(1, 2), 3)
 
-	assert.Equal(t, s.Combine(1, 2), 3)
+	s2 := dogs.DeriveAdditiveSemigroup[string]()
+	assert.Equal(t, s2.Combine("a", "b"), "ab")
 }
 
 func TestDeriveMultiplicativeSemigroup(t *testing.T) {
-	s := dogs.DeriveMultiplicativeSemigroup[int]()
+	s1 := dogs.DeriveMultiplicativeSemigroup[int]()
+	assert.Equal(t, s1.Combine(2, 3), 6)
 
-	assert.Equal(t, s.Combine(2, 3), 6)
+	s2 := dogs.DeriveMultiplicativeSemigroup[int32]()
+	assert.Equal(t, s2.Combine(4, 5), int32(20))
+}
+
+func TestDeriveAdditiveMonoid(t *testing.T) {
+	s1 := dogs.DeriveAdditiveMonoid[int]()
+	assert.Equal(t, s1.Combine(1, 2), 3)
+	assert.Equal(t, s1.Combine(s1.Empty(), 4), 4)
+	assert.Equal(t, s1.Combine(5, s1.Empty()), 5)
+
+	s2 := dogs.DeriveAdditiveMonoid[string]()
+	assert.Equal(t, s2.Combine("a", "b"), "ab")
+	assert.Equal(t, s2.Combine(s2.Empty(), "c"), "c")
+	assert.Equal(t, s2.Combine("d", s2.Empty()), "d")
 }

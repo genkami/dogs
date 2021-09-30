@@ -54,6 +54,21 @@ type Monoid[T any] interface {
 	Empty() T
 }
 
+// DeriveAdditiveMonoid derives Monoid using `+` and zero value.
+func DeriveAdditiveMonoid[T Additive]() Monoid[T] {
+	return additiveMonoid[T]{}
+}
+
+type additiveMonoid[T Additive] struct {}
+
+func (additiveMonoid[T]) Combine(x, y T) T {
+	return x + y
+}
+
+func (additiveMonoid[T]) Empty() (zero T) {
+	return
+}
+
 // DefaultMonoid is a default implementation of Monoid.
 type DefaultMonoid[T any] struct {
 	Semigroup[T]
