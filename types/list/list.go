@@ -10,6 +10,7 @@ type List[T any] struct {
 }
 
 //go:generate gotip run ../../cmd/gen-collection -pkg list -name *List -out zz_generated.list.go
+//go:generate gotip fmt ./zz_generated.list.go
 
 func NewList[T any](xs ...T) *List[T] {
 	var list *List[T] = nil
