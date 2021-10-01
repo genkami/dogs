@@ -21,15 +21,21 @@ func New[T any](xs ...T) *List[T] {
 }
 
 func FromIterator[T any](it iterator.Iterator[T]) *List[T] {
-	var list *List[T] = nil
+	var head, tail *List[T]
 	for {
 		x, ok := it.Next()
 		if !ok {
 			break
 		}
-		list = &List[T]{x, list}
+		if head == nil {
+			head = &List[T]{x, nil}
+			tail = head
+		} else {
+			tail.Tail = &List[T]{x, nil}
+			tail = tail.Tail
+		}
 	}
-	return list
+	return head
 }
 
 func (xs *List[T]) Iter() iterator.Iterator[T] {
