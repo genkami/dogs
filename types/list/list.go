@@ -12,7 +12,7 @@ type List[T any] struct {
 //go:generate gotip run ../../cmd/gen-collection -pkg list -name *List -out zz_generated.list.go
 //go:generate gotip fmt ./zz_generated.list.go
 
-func NewList[T any](xs ...T) *List[T] {
+func New[T any](xs ...T) *List[T] {
 	var list *List[T] = nil
 	for i := len(xs) - 1; i >= 0; i-- {
 		list = &List[T]{xs[i], list}

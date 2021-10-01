@@ -6,22 +6,22 @@ import (
 	"testing"
 )
 
-func TestNewList(t *testing.T) {
-	assert.Equal(t, list.NewList[int](), (*list.List[int])(nil))
-	assert.Equal(t, list.NewList[int](1), &list.List[int]{1, nil})
-	assert.Equal(t, list.NewList[int](1, 2), &list.List[int]{1, &list.List[int]{2, nil}})
-	assert.Equal(t, list.NewList[int](1, 2, 3), &list.List[int]{1, &list.List[int]{2, &list.List[int]{3, nil}}})
+func TestNew(t *testing.T) {
+	assert.Equal(t, list.New[int](), (*list.List[int])(nil))
+	assert.Equal(t, list.New[int](1), &list.List[int]{1, nil})
+	assert.Equal(t, list.New[int](1, 2), &list.List[int]{1, &list.List[int]{2, nil}})
+	assert.Equal(t, list.New[int](1, 2, 3), &list.List[int]{1, &list.List[int]{2, &list.List[int]{3, nil}}})
 }
 
 func TestList_Iter(t *testing.T) {
 	t.Run("empty", func(t *testing.T) {
-		it := list.NewList[string]().Iter()
+		it := list.New[string]().Iter()
 		_, ok := it.Next()
 		assert.False(t, ok)
 	})
 
 	t.Run("singleton", func(t *testing.T) {
-		it := list.NewList[string]("hoge").Iter()
+		it := list.New[string]("hoge").Iter()
 		x, ok := it.Next()
 		assert.True(t, ok)
 		assert.Equal(t, x, "hoge")
@@ -30,7 +30,7 @@ func TestList_Iter(t *testing.T) {
 	})
 
 	t.Run("multiple elements", func(t *testing.T) {
-		it := list.NewList[string]("hoge", "fuga", "foo").Iter()
+		it := list.New[string]("hoge", "fuga", "foo").Iter()
 		x, ok := it.Next()
 		assert.True(t, ok)
 		assert.Equal(t, x, "hoge")
