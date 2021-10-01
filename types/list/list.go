@@ -2,15 +2,31 @@ package list
 
 import "github.com/genkami/dogs/types/iterator"
 
+// List is a linked list.
+// An empty list is represented as nil.
 type List[T any] struct {
 	Head T
 	Tail *List[T]
 }
 
+//go:generate gotip run ../../cmd/gen-collection -pkg list -name *List -out zz_generated.list.go
+
 func NewList[T any](xs ...T) *List[T] {
 	var list *List[T] = nil
 	for i := len(xs) - 1; i >= 0; i-- {
 		list = &List[T]{xs[i], list}
+	}
+	return list
+}
+
+func FromIterator[T any](it iterator.Iterator[T]) *List[T] {
+	var list *List[T] = nil
+	for {
+		x, ok := it.Next()
+		if !ok {
+			break
+		}
+		list = &List[T]{x, list}
 	}
 	return list
 }

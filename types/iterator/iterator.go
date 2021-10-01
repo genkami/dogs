@@ -94,7 +94,7 @@ func Fold[T, U any](init T, it Iterator[U], fn func(T, U) T) T {
 
 // TODO: ForEach
 
-// Zip combines two Iterators that yields pairs of corresponding elements.
+// Zip combines two Iterators into one that yields pairs of corresponding elements.
 func Zip[T, U any](a Iterator[T], b Iterator[U]) Iterator[pair.Pair[T, U]] {
 	return &zipIterator[T, U]{
 		a: a,
@@ -162,5 +162,5 @@ func SumWithInit[T any](init T, it Iterator[T], s algebra.Semigroup[T]) T {
 // It returns `Empty()` when `it` is empty.
 func Sum[T any](it Iterator[T], m algebra.Monoid[T]) T {
 	var s algebra.Semigroup[T] = m
-	return SumWithInit(m.Empty(), it, s)
+	return SumWithInit[T](m.Empty(), it, s)
 }
