@@ -14,8 +14,11 @@ func FromIterator[T any](it iterator.Iterator[T]) Slice[T] {
 	))
 }
 
+//go:generate gotip run ../../cmd/gen-collection -pkg slice -name Slice -out zz_generated.collection.go
+//go:generate gotip fmt ./zz_generated.collection.go
+
+
 // Iter returns an Iterator that iterates over given slice.
-// TODO: this should be slice.Iter(xs)
 func (xs Slice[T]) Iter() iterator.Iterator[T] {
 	return &sliceIterator[T]{
 		xs:   ([]T)(xs),
@@ -46,14 +49,3 @@ func (it *sliceIterator[T]) Next() (T, bool) {
 // 		return o.Lt(xs[i], xs[j])
 // 	})
 // }
-
-// TODO: Find[T](xs []T, fn func(T) bool) (T, bool)
-// TODO: FindIndex[T](xs []T, fn func(T) bool) int
-// TODO: FindElem[T](xs []T, e T, eq Eq[T]) (T, bool)
-// TODO: FindElemIndex[T](xs []T, e T, eq Eq[T]) int
-// TODO: Map[T, U](xs []T, fn func(T) U) []U
-// TODO: Fold[T, U](init T, xs []U, fn func(T, U) T) T
-// TODO: ForEach[T](xs []T, fn func(T))
-// TODO: Zip[T, U](xs []T, ys []U) []Pair[T, U]
-// TODO: SumWithInit[T](init T, xs []T, s Semigroup[T]) T
-// TODO: Sum[T](xs []T, m Monoid[T]) T
