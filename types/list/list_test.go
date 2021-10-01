@@ -1,9 +1,9 @@
 package list_test
 
 import (
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"github.com/genkami/dogs/types/list"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestNewList(t *testing.T) {

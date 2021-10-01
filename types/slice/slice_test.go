@@ -3,8 +3,8 @@ package slice_test
 import (
 	"github.com/genkami/dogs/types/iterator"
 	"github.com/genkami/dogs/types/slice"
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestFromIterator(t *testing.T) {
@@ -20,7 +20,7 @@ func TestSlice_Iter(t *testing.T) {
 	subject := func(xs []string) iterator.Iterator[string] {
 		return slice.Slice[string](xs).Iter()
 	}
-	
+
 	t.Run("empty", func(t *testing.T) {
 		it := subject([]string{})
 		_, ok := it.Next()
@@ -66,4 +66,3 @@ func TestSlice_Iter(t *testing.T) {
 
 // 	assert.Equal(t, subject([]int{3, 5, 2, 1, 4}), []int{1, 2, 3, 4, 5})
 // }
-

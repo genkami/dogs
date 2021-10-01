@@ -2,13 +2,13 @@ package pair
 
 import (
 	"fmt"
-	"github.com/genkami/dogs/classes/cmp"
 	"github.com/genkami/dogs/classes/algebra"
+	"github.com/genkami/dogs/classes/cmp"
 )
 
 // Pair is a pair of two values.
 type Pair[T, U any] struct {
-	First T
+	First  T
 	Second U
 }
 
@@ -76,7 +76,7 @@ func DerivePairSemigroup[T, U any](st algebra.Semigroup[T], su algebra.Semigroup
 	return &algebra.DefaultSemigroup[Pair[T, U]]{
 		CombineImpl: func(p, q Pair[T, U]) Pair[T, U] {
 			return Pair[T, U]{
-				First: st.Combine(p.First, q.First),
+				First:  st.Combine(p.First, q.First),
 				Second: su.Combine(p.Second, q.Second),
 			}
 		},
@@ -88,7 +88,7 @@ func DerivePtrPairSemigroup[T, U any](st algebra.Semigroup[T], su algebra.Semigr
 	return &algebra.DefaultSemigroup[*Pair[T, U]]{
 		CombineImpl: func(p, q *Pair[T, U]) *Pair[T, U] {
 			return &Pair[T, U]{
-				First: st.Combine(p.First, q.First),
+				First:  st.Combine(p.First, q.First),
 				Second: su.Combine(p.Second, q.Second),
 			}
 		},
@@ -103,7 +103,7 @@ func DerivePairMonoid[T, U any](mt algebra.Monoid[T], mu algebra.Monoid[U]) alge
 		Semigroup: DerivePairSemigroup[T, U](st, su),
 		EmptyImpl: func() Pair[T, U] {
 			return Pair[T, U]{
-				First: mt.Empty(),
+				First:  mt.Empty(),
 				Second: mu.Empty(),
 			}
 		},
@@ -116,9 +116,9 @@ func DerivePtrPairMonoid[T, U any](mt algebra.Monoid[T], mu algebra.Monoid[U]) a
 	var su algebra.Semigroup[U] = mu
 	return &algebra.DefaultMonoid[*Pair[T, U]]{
 		Semigroup: DerivePtrPairSemigroup[T, U](st, su),
-		EmptyImpl: func() *Pair[T, U]{
+		EmptyImpl: func() *Pair[T, U] {
 			return &Pair[T, U]{
-				First: mt.Empty(),
+				First:  mt.Empty(),
 				Second: mu.Empty(),
 			}
 		},

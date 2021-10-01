@@ -18,16 +18,15 @@ func FromIterator[T any](it iterator.Iterator[T]) Slice[T] {
 // TODO: this should be slice.Iter(xs)
 func (xs Slice[T]) Iter() iterator.Iterator[T] {
 	return &sliceIterator[T]{
-		xs: ([]T)(xs),
+		xs:   ([]T)(xs),
 		next: 0,
 	}
 }
 
 type sliceIterator[T any] struct {
-	xs []T
+	xs   []T
 	next int
 }
-
 
 func (it *sliceIterator[T]) Next() (T, bool) {
 	if len(it.xs) <= it.next {

@@ -22,7 +22,7 @@ func DeriveAdditiveSemigroup[T Additive]() Semigroup[T] {
 	return additiveSemigroup[T]{}
 }
 
-type additiveSemigroup[T Additive] struct {}
+type additiveSemigroup[T Additive] struct{}
 
 func (additiveSemigroup[T]) Combine(x, y T) T {
 	return x + y
@@ -59,7 +59,7 @@ func DeriveAdditiveMonoid[T Additive]() Monoid[T] {
 	return additiveMonoid[T]{}
 }
 
-type additiveMonoid[T Additive] struct {}
+type additiveMonoid[T Additive] struct{}
 
 func (additiveMonoid[T]) Combine(x, y T) T {
 	return x + y

@@ -3,9 +3,9 @@ package pair_test
 import (
 	"github.com/genkami/dogs/classes/algebra"
 	"github.com/genkami/dogs/classes/cmp"
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"github.com/genkami/dogs/types/pair"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestPair_Values(t *testing.T) {
@@ -43,7 +43,7 @@ func TestDerivePairOrd(t *testing.T) {
 	}
 
 	assert.Equal(t, subject(pair(1, "hoge"), pair(1, "hoge")), cmp.EQ)
-	
+
 	assert.Equal(t, subject(pair(1, "hoga"), pair(1, "hoge")), cmp.LT)
 	assert.Equal(t, subject(pair(0, "hoge"), pair(1, "hoge")), cmp.LT)
 	assert.Equal(t, subject(pair(0, "hoga"), pair(1, "hoge")), cmp.LT)
@@ -60,7 +60,7 @@ func TestDerivePtrPairOrd(t *testing.T) {
 	}
 
 	assert.Equal(t, subject(pair(1, "hoge"), pair(1, "hoge")), cmp.EQ)
-	
+
 	assert.Equal(t, subject(pair(1, "hoga"), pair(1, "hoge")), cmp.LT)
 	assert.Equal(t, subject(pair(0, "hoge"), pair(1, "hoge")), cmp.LT)
 	assert.Equal(t, subject(pair(0, "hoga"), pair(1, "hoge")), cmp.LT)

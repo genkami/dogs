@@ -2,13 +2,13 @@ package iterator_test
 
 import (
 	"github.com/genkami/dogs/classes/algebra"
+	"github.com/genkami/dogs/classes/cmp"
 	"github.com/genkami/dogs/types/iterator"
-	"github.com/genkami/dogs/types/slice"
 	"github.com/genkami/dogs/types/pair"
+	"github.com/genkami/dogs/types/slice"
+	"github.com/stretchr/testify/assert"
 	"strconv"
 	"testing"
-	"github.com/stretchr/testify/assert"
-	"github.com/genkami/dogs/classes/cmp"
 )
 
 func TestFind(t *testing.T) {
@@ -168,7 +168,7 @@ func TestZip(t *testing.T) {
 	}
 
 	t.Run("empty", func(t *testing.T) {
-		assert.Equal(t, subject([]int{}, []string{}),[]Pair{})
+		assert.Equal(t, subject([]int{}, []string{}), []Pair{})
 		assert.Equal(t, subject([]int{1, 2}, []string{}), []Pair{})
 		assert.Equal(t, subject([]int{}, []string{"a", "b"}), []Pair{})
 	})

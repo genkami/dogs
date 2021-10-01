@@ -56,7 +56,6 @@ type Ord[T any] interface {
 
 	// Ne(x, y) means x != y.
 	Ne(T, T) bool
-
 }
 
 // DeriveOrd derives Ord using `<`, `<=`, `>`, `>=`, `==`, and `!=`.
