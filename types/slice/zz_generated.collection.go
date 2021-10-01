@@ -39,7 +39,7 @@ func Map[T, U any](xs Slice[T], fn func(T) U) Slice[U] {
 }
 
 // Fold accumulates every element in a collection by applying fn.
-func Fold[T, U any](init T, xs Slice[U], fn func(T, U) T) T {
+func Fold[T any, U any](init T, xs Slice[U], fn func(T, U) T) T {
 	return iterator.Fold[T, U](init, xs.Iter(), fn)
 }
 
