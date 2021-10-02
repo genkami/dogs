@@ -54,10 +54,12 @@ func FindElemIndex[T any](it Iterator[T], e T, eq cmp.Eq[T]) int {
 	return FindIndex[T](it, func(x T) bool { return eq.Equal(x, e) })
 }
 
+// TODO: Filter(it, fn)
+// TODO: FilterElem(it, e, eq)
 // TODO: Take(it, n)
 // TODO: Drop(it, n)
 
-// Map(it, f) returns an iterator that applies f to each element of it.
+// Map returns an iterator that applies fn to each element of it.
 func Map[T, U any](it Iterator[T], fn func(T) U) Iterator[U] {
 	return &mapIterator[T, U]{
 		it: it,

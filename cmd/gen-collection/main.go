@@ -19,10 +19,10 @@ import (
 
 func main() {
 	var (
-		pkgName string
-		typeName string
+		pkgName    string
+		typeName   string
 		constraint string
-		output string
+		output     string
 	)
 
 	flag.StringVar(&pkgName, "pkg", "", "the name of the package")
@@ -53,8 +53,8 @@ func main() {
 
 	tmpl := template.Must(template.New("collection.go.tmpl").Parse(rawTmpl))
 	tmpl.Execute(w, map[string]string{
-		"PkgName": pkgName,
-		"TypeName": typeName,
+		"PkgName":    pkgName,
+		"TypeName":   typeName,
 		"Constraint": constraint,
 	})
 }
@@ -94,7 +94,7 @@ func FindElemIndex[T {{ .Constraint }}](xs {{ .TypeName }}[T], e T, eq cmp.Eq[T]
 	return iterator.FindElemIndex[T](xs.Iter(), e, eq)
 }
 
-// Map(xs, f) returns a collection that applies f to each element of xs.
+// Map returns a collection that applies fn to each element of xs.
 func Map[T, U {{ .Constraint }}](xs {{ .TypeName }}[T], fn func(T) U) {{ .TypeName }}[U] {
 	return FromIterator[U](iterator.Map[T, U](xs.Iter(), fn))
 }

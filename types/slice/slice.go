@@ -17,7 +17,6 @@ func FromIterator[T any](it iterator.Iterator[T]) Slice[T] {
 //go:generate gotip run ../../cmd/gen-collection -pkg slice -name Slice -out zz_generated.collection.go
 //go:generate gotip fmt ./zz_generated.collection.go
 
-
 // Iter returns an Iterator that iterates over given slice.
 func (xs Slice[T]) Iter() iterator.Iterator[T] {
 	return &sliceIterator[T]{

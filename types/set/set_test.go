@@ -1,15 +1,15 @@
 package set_test
 
 import (
+	"github.com/genkami/dogs/types/set"
 	"github.com/genkami/dogs/types/slice"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"github.com/genkami/dogs/types/set"
 )
 
 func TestHas(t *testing.T) {
 	assert.False(t, set.Has(set.New[int](), 1))
-	assert.True(t, set.Has(set.New[int](1),1))
+	assert.True(t, set.Has(set.New[int](1), 1))
 
 	assert.True(t, set.Has(set.New[int](1, 2, 3), 1))
 	assert.True(t, set.Has(set.New[int](1, 2, 3), 2))
@@ -70,7 +70,6 @@ func TestRemove(t *testing.T) {
 	assert.True(t, set.Has(s, 2))
 	assert.True(t, set.Has(s, 3))
 	assert.True(t, set.Has(s, 4))
-
 
 	ok := set.Remove(s, 4)
 	assert.True(t, ok)

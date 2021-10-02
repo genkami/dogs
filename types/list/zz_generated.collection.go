@@ -33,7 +33,7 @@ func FindElemIndex[T any](xs *List[T], e T, eq cmp.Eq[T]) int {
 	return iterator.FindElemIndex[T](xs.Iter(), e, eq)
 }
 
-// Map(xs, f) returns a collection that applies f to each element of xs.
+// Map returns a collection that applies fn to each element of xs.
 func Map[T, U any](xs *List[T], fn func(T) U) *List[U] {
 	return FromIterator[U](iterator.Map[T, U](xs.Iter(), fn))
 }
