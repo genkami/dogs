@@ -32,6 +32,44 @@ We will continue to implement more utility types and functions.
 * Set
 * Iterator
 
+# Examples
+
+More examples [here](https://github.com/genkami/dogs/tree/main/examples).
+
+## FizzBuzz
+
+```go
+func main() {
+	monoid := option.DeriveMonoid[string](algebra.DeriveAdditiveSemigroup[string]())
+	fizzBuzz := func(i int) string {
+		fizz := option.Filter(option.Some[string]("Fizz"), func(_ string) bool { return i%3 == 0 })
+		buzz := option.Filter(option.Some[string]("Buzz"), func(_ string) bool { return i%5 == 0 })
+		return option.UnwrapOr(monoid.Combine(fizz, buzz), fmt.Sprint(i))
+	}
+	it := iterator.Map(iterator.Range[int](1, 15), fizzBuzz)
+	iterator.ForEach(it, func(s string) { fmt.Println(s) })
+}
+```
+
+## Fibonacci
+
+```go
+func main() {
+	type Pair = pair.Pair[int, int]
+	it := iterator.Unfold(
+		Pair{1, 1},
+		func(p Pair) (Pair, int, bool) {
+			a, b := p.Values()
+			return Pair{b, a + b}, a, true
+		},
+	)
+	iterator.ForEach(
+		iterator.Take(it, 5),
+		func(i int) { fmt.Println(i) },
+	)
+}
+```
+
 # Acknowledgements
 This library is inspired mainly by:
 
