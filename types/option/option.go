@@ -133,5 +133,14 @@ func DeriveSemigroup[T any](s algebra.Semigroup[T]) algebra.Semigroup[Option[T]]
 	}
 }
 
-// TODO: func DeriveSemigroup[T any](s algebra.Semigroup[T]) algebra.Semigroup[Option[T]]
-// TODO: func DeriveMonoid[T any](s algebra.Semigroup[T]) algebra.Monoid[Option[T]] (note that T doesn't need to be Monoid)
+// DeriveMonoid derives Monoid[Option[T]] from Semigroup[T].
+// T doesn't need to be Monoid since the None() is the identity element of the monoid.
+func DeriveMonoid[T any](s algebra.Semigroup[T]) algebra.Monoid[Option[T]] {
+	semi := DeriveSemigroup[T](s)
+	return &algebra.DefaultMonoid[Option[T]]{
+		Semigroup: semi,
+		EmptyImpl: func() Option[T] {
+			return None[T]()
+		},
+	}
+}

@@ -87,3 +87,28 @@ func TestDeriveSemigroup(t *testing.T) {
 	assert.True(t, option.Equal(subject(some(123), none()), some(123)))
 	assert.True(t, option.Equal(subject(none(), some(456)), some(456)))
 }
+
+func TestDeriveMonoid(t *testing.T) {
+	some := func(x int) option.Option[int] {
+		return option.Some[int](x)
+	}
+	none := func() option.Option[int] {
+		return option.None[int]()
+	}
+
+	intSemi := algebra.DeriveAdditiveSemigroup[int]()
+	optMono := option.DeriveMonoid[int](intSemi)
+
+	subject := func(x, y option.Option[int]) option.Option[int] {
+		return optMono.Combine(x, y)
+	}
+
+	assert.True(t, option.Equal(subject(some(123), some(456)), some(579)))
+	assert.True(t, option.Equal(subject(some(123), none()), some(123)))
+	assert.True(t, option.Equal(subject(none(), some(456)), some(456)))
+
+	assert.True(t, option.Equal(subject(optMono.Empty(), optMono.Empty()), none()))
+	assert.True(t, option.Equal(subject(optMono.Empty(), none()), none()))
+	assert.True(t, option.Equal(subject(some(123), optMono.Empty()), some(123)))
+	assert.True(t, option.Equal(subject(optMono.Empty(), some(456)), some(456)))
+}
