@@ -117,6 +117,24 @@ func TestFindElemIndex(t *testing.T) {
 	assertNotFound("empty", []int{}, 0)
 }
 
+func TestFilter(t *testing.T) {
+	assertEqual := func(xs []int, expected []int, fn func(int) bool) {
+		it := iterator.Filter[int](slice.Slice[int](xs).Iter(), fn)
+		actual := ([]int)(slice.FromIterator[int](it))
+		assert.Equal(t, expected, actual)
+	}
+
+	assertEqual([]int{}, []int{}, func(_ int) bool { return true })
+	assertEqual([]int{1}, []int{1}, func(_ int) bool { return true })
+	assertEqual([]int{1, 2, 3}, []int{1, 2, 3}, func(_ int) bool { return true })
+
+	assertEqual([]int{}, []int{}, func(i int) bool { return i%2 == 0 })
+	assertEqual([]int{1}, []int{}, func(i int) bool { return i%2 == 0 })
+	assertEqual([]int{2}, []int{2}, func(i int) bool { return i%2 == 0 })
+	assertEqual([]int{1, 2, 3, 4, 5, 6}, []int{2, 4, 6}, func(i int) bool { return i%2 == 0 })
+	assertEqual([]int{2, 4, 6, 8, 10}, []int{2, 4, 6, 8, 10}, func(i int) bool { return i%2 == 0 })
+}
+
 func TestMap(t *testing.T) {
 	subject := func(xs []int) []string {
 		it := slice.Slice[int](xs).Iter()

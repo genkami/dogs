@@ -54,8 +54,37 @@ func FindElemIndex[T any](it Iterator[T], e T, eq cmp.Eq[T]) int {
 	return FindIndex[T](it, func(x T) bool { return eq.Equal(x, e) })
 }
 
-// TODO: Filter(it, fn)
-// TODO: FilterElem(it, e, eq)
+// Filter returns an Iterator that only returns elements that satisfies given predicate.
+func Filter[T any](it Iterator[T], fn func(T) bool) Iterator[T] {
+	return &filterIterator[T]{
+		it: it,
+		fn: fn,
+	}
+}
+
+type filterIterator[T any] struct {
+	it       Iterator[T]
+	fn       func(T) bool
+	finished bool
+}
+
+func (it *filterIterator[T]) Next() (T, bool) {
+	var zero T
+	if it.finished {
+		return zero, false
+	}
+	for {
+		x, ok := it.it.Next()
+		if !ok {
+			it.finished = true
+			return zero, false
+		}
+		if it.fn(x) {
+			return x, true
+		}
+	}
+}
+
 // TODO: Take(it, n)
 // TODO: Drop(it, n)
 
