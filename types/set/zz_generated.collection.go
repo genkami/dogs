@@ -15,12 +15,6 @@ func Find[T comparable](xs Set[T], fn func(T) bool) (T, bool) {
 	return iterator.Find[T](xs.Iter(), fn)
 }
 
-// FindIndex returns a first index of an element in xs that satisfies the given predicate fn.
-// It returns negative value if no elements are found.
-func FindIndex[T comparable](xs Set[T], fn func(T) bool) int {
-	return iterator.FindIndex[T](xs.Iter(), fn)
-}
-
 // FindElem returns a first element in xs that equals to e in the sense of given Eq.
 // It returns false as a second return value if no elements are found.
 func FindElem[T comparable](xs Set[T], e T, eq cmp.Eq[T]) (T, bool) {
@@ -33,9 +27,10 @@ func FindElemIndex[T comparable](xs Set[T], e T, eq cmp.Eq[T]) int {
 	return iterator.FindElemIndex[T](xs.Iter(), e, eq)
 }
 
-// Map returns a collection that applies fn to each element of xs.
-func Map[T, U comparable](xs Set[T], fn func(T) U) Set[U] {
-	return FromIterator[U](iterator.Map[T, U](xs.Iter(), fn))
+// FindIndex returns a first index of an element in xs that satisfies the given predicate fn.
+// It returns negative value if no elements are found.
+func FindIndex[T comparable](xs Set[T], fn func(T) bool) int {
+	return iterator.FindIndex[T](xs.Iter(), fn)
 }
 
 // Fold accumulates every element in a collection by applying fn.
@@ -43,14 +38,9 @@ func Fold[T any, U comparable](init T, xs Set[U], fn func(T, U) T) T {
 	return iterator.Fold[T, U](init, xs.Iter(), fn)
 }
 
-// Zip combines two collections into one that contains pairs of corresponding elements.
-func Zip[T, U comparable](a Set[T], b Set[U]) Set[pair.Pair[T, U]] {
-	return FromIterator[pair.Pair[T, U]](iterator.Zip(a.Iter(), b.Iter()))
-}
-
-// SumWithInit sums up init and all values in xs.
-func SumWithInit[T comparable](init T, xs Set[T], s algebra.Semigroup[T]) T {
-	return Fold[T, T](init, xs, s.Combine)
+// Map returns a collection that applies fn to each element of xs.
+func Map[T, U comparable](xs Set[T], fn func(T) U) Set[U] {
+	return FromIterator[U](iterator.Map[T, U](xs.Iter(), fn))
 }
 
 // Sum sums up all values in xs.
@@ -58,4 +48,14 @@ func SumWithInit[T comparable](init T, xs Set[T], s algebra.Semigroup[T]) T {
 func Sum[T comparable](xs Set[T], m algebra.Monoid[T]) T {
 	var s algebra.Semigroup[T] = m
 	return SumWithInit[T](m.Empty(), xs, s)
+}
+
+// SumWithInit sums up init and all values in xs.
+func SumWithInit[T comparable](init T, xs Set[T], s algebra.Semigroup[T]) T {
+	return Fold[T, T](init, xs, s.Combine)
+}
+
+// Zip combines two collections into one that contains pairs of corresponding elements.
+func Zip[T, U comparable](a Set[T], b Set[U]) Set[pair.Pair[T, U]] {
+	return FromIterator[pair.Pair[T, U]](iterator.Zip(a.Iter(), b.Iter()))
 }
