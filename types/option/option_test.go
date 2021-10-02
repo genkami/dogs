@@ -2,6 +2,7 @@ package option_test
 
 import (
 	"github.com/genkami/dogs/types/option"
+	"github.com/genkami/dogs/types/slice"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -41,4 +42,27 @@ func TestUnwrapOrElse(t *testing.T) {
 	assert.Equal(t, option.UnwrapOrElse(option.None[int](), fn), 1)
 	assert.Equal(t, option.UnwrapOrElse(option.None[int](), fn), 2)
 	assert.Equal(t, option.UnwrapOrElse(option.None[int](), fn), 3)
+}
+
+func TestFromIterator(t *testing.T) {
+	subject := func(xs ...int) option.Option[int] {
+		it := slice.Slice[int](xs).Iter()
+		return option.FromIterator(it)
+	}
+	assert.True(t, option.Equal(subject(), option.None[int]()))
+}
+
+func TestIter(t *testing.T) {
+	some := func(x int) []int {
+		it := option.Some[int](x).Iter()
+		return ([]int)(slice.FromIterator(it))
+	}
+	none := func() []int {
+		it := option.None[int]().Iter()
+		return ([]int)(slice.FromIterator(it))
+	}
+	assert.Equal(t, none(), []int{})
+	assert.Equal(t, some(1), []int{1})
+	assert.Equal(t, some(2), []int{2})
+	assert.Equal(t, some(3), []int{3})
 }
