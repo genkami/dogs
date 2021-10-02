@@ -160,6 +160,12 @@ func Map[T, U {{ .Constraint }}](xs {{ .TypeName }}[T], fn func(T) U) {{ .TypeNa
 	return FromIterator[U](iterator.Map[T, U](xs.Iter(), fn))
 }
 `,
+	"ForEach": `
+// ForEach applies fn to each element in xs.
+func ForEach[T {{ .Constraint }}](xs {{ .TypeName }}[T], fn func(T)) {
+	iterator.ForEach[T](xs.Iter(), fn)
+}
+`,
 	"Fold": `
 // Fold accumulates every element in a collection by applying fn.
 func Fold[T any, U {{ .Constraint }}](init T, xs {{ .TypeName }}[U], fn func(T, U) T) T {

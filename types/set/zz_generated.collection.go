@@ -33,6 +33,11 @@ func Fold[T any, U comparable](init T, xs Set[U], fn func(T, U) T) T {
 	return iterator.Fold[T, U](init, xs.Iter(), fn)
 }
 
+// ForEach applies fn to each element in xs.
+func ForEach[T comparable](xs Set[T], fn func(T)) {
+	iterator.ForEach[T](xs.Iter(), fn)
+}
+
 // Map returns a collection that applies fn to each element of xs.
 func Map[T, U comparable](xs Set[T], fn func(T) U) Set[U] {
 	return FromIterator[U](iterator.Map[T, U](xs.Iter(), fn))

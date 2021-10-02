@@ -130,6 +130,8 @@ func (it *zipIterator[T, U]) Next() (pair.Pair[T, U], bool) {
 	return pair.Pair[T, U]{x, y}, true
 }
 
+// TODO: ZipWith
+
 // Unfold returns an Iterator `it` that has an initial state `init` and updating function `step`.
 // On each call to `it.Next()`, it updates its internal state by applying `step` and return the second return value.
 // If the third return value of `step` is `false`, `it.Next()` stops iterating and returns `(<zero value>, false)`.
