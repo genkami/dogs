@@ -2,7 +2,9 @@ package examples_test
 
 import (
 	"fmt"
+	"github.com/genkami/dogs/classes/algebra"
 	"github.com/genkami/dogs/types/iterator"
+	"github.com/genkami/dogs/types/option"
 )
 
 func ExampleFizzBuzz_pureGo() {
@@ -46,11 +48,34 @@ func ExampleFizzBuzz_rangeAndMap() {
 			return fmt.Sprint(i)
 		}
 	}
-
 	it := iterator.Map(iterator.Range[int](1, 15), fizzBuzz)
-	iterator.ForEach(it, func(s string) {
-		fmt.Println(s)
-	})
+	iterator.ForEach(it, func(s string) { fmt.Println(s) })
+	// Output: 1
+	// 2
+	// Fizz
+	// 4
+	// Buzz
+	// Fizz
+	// 7
+	// 8
+	// Fizz
+	// Buzz
+	// 11
+	// Fizz
+	// 13
+	// 14
+	// FizzBuzz
+}
+
+func ExampleFizzBuzz_monoid() {
+	monoid := option.DeriveMonoid[string](algebra.DeriveAdditiveMonoid[string]())
+	fizzBuzz := func(i int) string {
+		fizz := option.Filter(option.Some[string]("Fizz"), func(_ string) bool { return i%3 == 0 })
+		buzz := option.Filter(option.Some[string]("Buzz"), func(_ string) bool { return i%5 == 0 })
+		return option.UnwrapOr(monoid.Combine(fizz, buzz), fmt.Sprint(i))
+	}
+	it := iterator.Map(iterator.Range[int](1, 15), fizzBuzz)
+	iterator.ForEach(it, func(s string) { fmt.Println(s) })
 	// Output: 1
 	// 2
 	// Fizz
