@@ -1,6 +1,7 @@
 package iterator
 
 import (
+	"constraints"
 	"github.com/genkami/dogs/classes/algebra"
 	"github.com/genkami/dogs/classes/cmp"
 	"github.com/genkami/dogs/types/pair"
@@ -11,6 +12,29 @@ type Iterator[T any] interface {
 	// Next returns the next element in this Iterable and advances its state.
 	// The second return value is false if and only if there are no elements to return.
 	Next() (T, bool)
+}
+
+// Range returns an Iterator that returns start, start+1, ..., end-1, end, sequentially.
+// The returned Iterator does not return any valeus if end is smaller than start.
+func Range[T constraints.Integer](start, end T) Iterator[T] {
+	return &rangeIterator[T]{
+		next: start,
+		end:  end,
+	}
+}
+
+type rangeIterator[T constraints.Integer] struct {
+	next, end T
+}
+
+func (it *rangeIterator[T]) Next() (T, bool) {
+	if it.end < it.next {
+		var zero T
+		return zero, false
+	}
+	v := it.next
+	it.next++
+	return v, true
 }
 
 // Find returns a first element in `it` that satisfies the given predicate `fn`.
@@ -191,9 +215,6 @@ func (it *unfoldIterator[T, U]) Next() (U, bool) {
 	it.state = state
 	return next, true
 }
-
-// TODO: EnumFrom
-// TODO: EnumFromTo
 
 // SumWithInit sums up `init` and all values in `it`.
 func SumWithInit[T any](init T, it Iterator[T], s algebra.Semigroup[T]) T {

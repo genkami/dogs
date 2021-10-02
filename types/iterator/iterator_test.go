@@ -11,6 +11,16 @@ import (
 	"testing"
 )
 
+func TestRange(t *testing.T) {
+	subject := func(start, end int) []int {
+		return toSlice[int](iterator.Range(start, end))
+	}
+
+	assert.Equal(t, subject(1, 3), []int{1, 2, 3})
+	assert.Equal(t, subject(1, 1), []int{1})
+	assert.Equal(t, subject(1, 0), []int{})
+}
+
 func TestFind(t *testing.T) {
 	assertFound := func(name string, xs []int, x int, fn func(int) bool) {
 		t.Run(name, func(t *testing.T) {
