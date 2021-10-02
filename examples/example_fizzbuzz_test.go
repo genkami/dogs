@@ -68,7 +68,7 @@ func ExampleFizzBuzz_rangeAndMap() {
 }
 
 func ExampleFizzBuzz_monoid() {
-	monoid := option.DeriveMonoid[string](algebra.DeriveAdditiveMonoid[string]())
+	monoid := option.DeriveMonoid[string](algebra.DeriveAdditiveSemigroup[string]())
 	fizzBuzz := func(i int) string {
 		fizz := option.Filter(option.Some[string]("Fizz"), func(_ string) bool { return i%3 == 0 })
 		buzz := option.Filter(option.Some[string]("Buzz"), func(_ string) bool { return i%5 == 0 })
