@@ -25,14 +25,14 @@ func main() {
 		pkgName    string
 		typeName   string
 		constraint string
-		include    string
+		exclude    string
 		output     string
 	)
 
 	flag.StringVar(&pkgName, "pkg", "", "the name of the package")
 	flag.StringVar(&typeName, "name", "", "the name of the type")
 	flag.StringVar(&constraint, "constraint", "any", "type constraint that the type argument of this type should satisfy")
-	flag.StringVar(&include, "include", "", "comma-separated names of funcions to include (all functions if ommitted)")
+	flag.StringVar(&exclude, "exclude", "", "comma-separated names of funcions to exclude")
 	flag.StringVar(&output, "out", "", "path to output")
 	flag.Parse()
 
@@ -56,12 +56,12 @@ func main() {
 	}
 	defer w.Close()
 
-	var allowList []string
-	if len(include) > 0 {
-		allowList = strings.Split(include, ",")
+	var denyList []string
+	if len(exclude) > 0 {
+		denyList = strings.Split(exclude, ",")
 	}
 
-	tmpl, err := generateTemplate(allowList)
+	tmpl, err := generateTemplate(denyList)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "gen-collection: failed to prepare template: %s\n", err.Error())
 		os.Exit(1)
@@ -77,22 +77,22 @@ func main() {
 	}
 }
 
-func generateTemplate(allowList []string) (*template.Template, error) {
+func generateTemplate(denyList []string) (*template.Template, error) {
 	var buf bytes.Buffer
 	buf.WriteString(header)
 
-	allowMap := make(map[string]struct{})
-	for _, allowed := range allowList {
-		if _, ok := allFuncs[allowed]; !ok {
-			return nil, fmt.Errorf("invalid -include option: %s not found\n", allowed)
+	denyMap := make(map[string]struct{})
+	for _, denied := range denyList {
+		if _, ok := allFuncs[denied]; !ok {
+			return nil, fmt.Errorf("invalid -exclude option: %s not found\n", denied)
 		}
-		allowMap[allowed] = struct{}{}
+		denyMap[denied] = struct{}{}
 	}
 
 	keys := make([]string, 0, len(allFuncs))
 outer:
 	for k, _ := range allFuncs {
-		if _, ok := allowMap[k]; ok || len(allowMap) == 0 {
+		if _, ok := denyMap[k]; !ok {
 			keys = append(keys, k)
 			continue outer
 		}
