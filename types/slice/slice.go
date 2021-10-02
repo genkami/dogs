@@ -1,6 +1,10 @@
 package slice
 
-import "github.com/genkami/dogs/types/iterator"
+import (
+	"github.com/genkami/dogs/classes/cmp"
+	"github.com/genkami/dogs/types/iterator"
+	"sort"
+)
 
 // Slice is a slice with extra methods.
 type Slice[T any] []T
@@ -40,11 +44,9 @@ func (it *sliceIterator[T]) Next() (T, bool) {
 	return it.xs[i], true
 }
 
-// Sort sorts `xs` using `Ord`.
-// TODO: ./slice_test.go:58:54: internal compiler error: NewMethodType with type parameters in signature FUNC-method(*struct {}) func(dogs.T₆₄, dogs.T₆₄) bool
-// TODO: this should be slice.Sort(xs, o)
-// func (xs Slice[T]) Sort(o Ord[T]) {
-// 	sort.Slice(([]T)(xs), func(i, j int) bool {
-// 		return o.Lt(xs[i], xs[j])
-// 	})
-// }
+// Sort destructively sorts `xs` using `Ord`.
+func Sort[T any](xs Slice[T], o cmp.Ord[T]) {
+	sort.Slice(([]T)(xs), func(i, j int) bool {
+		return o.Lt(xs[i], xs[j])
+	})
+}

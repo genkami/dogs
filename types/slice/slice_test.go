@@ -1,6 +1,7 @@
 package slice_test
 
 import (
+	"github.com/genkami/dogs/classes/cmp"
 	"github.com/genkami/dogs/types/iterator"
 	"github.com/genkami/dogs/types/slice"
 	"github.com/stretchr/testify/assert"
@@ -52,17 +53,18 @@ func TestSlice_Iter(t *testing.T) {
 	})
 }
 
-// func TestSlice_Sort(t *testing.T) {
-// 	subject := func(xs []int) []int {
-// 		slice.Slice[int](xs).Sort(intOrd)
-// 		return xs
-// 	}
+func TestSlice_Sort(t *testing.T) {
+	ord := cmp.DeriveOrd[int]()
+	subject := func(xs []int) []int {
+		slice.Sort[int](slice.Slice[int](xs), ord)
+		return xs
+	}
 
-// 	assert.Equal(t, subject([]int{}), []int{})
-// 	assert.Equal(t, subject([]int{1}), []int{1})
+	assert.Equal(t, subject([]int{}), []int{})
+	assert.Equal(t, subject([]int{1}), []int{1})
 
-// 	assert.Equal(t, subject([]int{1, 2}), []int{1, 2})
-// 	assert.Equal(t, subject([]int{2, 1}), []int{2, 1})
+	assert.Equal(t, subject([]int{1, 2}), []int{1, 2})
+	assert.Equal(t, subject([]int{2, 1}), []int{1, 2})
 
-// 	assert.Equal(t, subject([]int{3, 5, 2, 1, 4}), []int{1, 2, 3, 4, 5})
-// }
+	assert.Equal(t, subject([]int{3, 5, 2, 1, 4}), []int{1, 2, 3, 4, 5})
+}
