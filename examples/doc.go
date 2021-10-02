@@ -2,3 +2,5 @@
 package examples
 
 type FizzBuzz struct{}
+
+type Fibonacci struct{}
