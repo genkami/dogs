@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strings"
 	"text/template"
 )
 
@@ -24,38 +25,45 @@ func main() {
 		pkgName    string
 		typeName   string
 		constraint string
+		include    string
 		output     string
 	)
 
 	flag.StringVar(&pkgName, "pkg", "", "the name of the package")
 	flag.StringVar(&typeName, "name", "", "the name of the type")
 	flag.StringVar(&constraint, "constraint", "any", "type constraint that the type argument of this type should satisfy")
+	flag.StringVar(&include, "include", "", "comma-separated names of funcions to include (all functions if ommitted)")
 	flag.StringVar(&output, "out", "", "path to output")
 	flag.Parse()
 
 	if pkgName == "" {
-		fmt.Fprintf(os.Stderr, "gen-collection: missing -pkg")
+		fmt.Fprintf(os.Stderr, "gen-collection: missing -pkg\n")
 		os.Exit(1)
 	}
 	if typeName == "" {
-		fmt.Fprintf(os.Stderr, "gen-collection: missing -type-name")
+		fmt.Fprintf(os.Stderr, "gen-collection: missing -type-name\n")
 		os.Exit(1)
 	}
 	if output == "" {
-		fmt.Fprintf(os.Stderr, "gen-collection: missing -out")
+		fmt.Fprintf(os.Stderr, "gen-collection: missing -out\n")
 		os.Exit(1)
 	}
 
 	w, err := os.Create(output)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "gen-collection: failed to open %s: %s", output, err.Error())
+		fmt.Fprintf(os.Stderr, "gen-collection: failed to open %s: %s\n", output, err.Error())
 		os.Exit(1)
 	}
 	defer w.Close()
 
-	tmpl, err := generateTemplate()
+	var allowList []string
+	if len(include) > 0 {
+		allowList = strings.Split(include, ",")
+	}
+
+	tmpl, err := generateTemplate(allowList)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "gen-collection: failed to prepare template: %s", err.Error())
+		fmt.Fprintf(os.Stderr, "gen-collection: failed to prepare template: %s\n", err.Error())
 		os.Exit(1)
 	}
 	err = tmpl.Execute(w, map[string]string{
@@ -64,23 +72,35 @@ func main() {
 		"Constraint": constraint,
 	})
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "gen-collection: failed to write template: %s", err.Error())
+		fmt.Fprintf(os.Stderr, "gen-collection: failed to write template: %s\n", err.Error())
 		os.Exit(1)
 	}
 }
 
-func generateTemplate() (*template.Template, error) {
+func generateTemplate(allowList []string) (*template.Template, error) {
 	var buf bytes.Buffer
 	buf.WriteString(header)
 
-	keys := make([]string, 0, len(funcs))
-	for k, _ := range funcs {
-		keys = append(keys, k)
+	allowMap := make(map[string]struct{})
+	for _, allowed := range allowList {
+		if _, ok := allFuncs[allowed]; !ok {
+			return nil, fmt.Errorf("invalid -include option: %s not found\n", allowed)
+		}
+		allowMap[allowed] = struct{}{}
+	}
+
+	keys := make([]string, 0, len(allFuncs))
+outer:
+	for k, _ := range allFuncs {
+		if _, ok := allowMap[k]; ok || len(allowMap) == 0 {
+			keys = append(keys, k)
+			continue outer
+		}
 	}
 	sort.Strings(keys)
 
 	for _, k := range keys {
-		buf.WriteString(funcs[k])
+		buf.WriteString(allFuncs[k])
 	}
 	return template.Must(template.New("").Parse(buf.String())), nil
 }
@@ -95,9 +115,17 @@ import (
 	"github.com/genkami/dogs/types/iterator"
 	"github.com/genkami/dogs/types/pair"
 )
+
+// Some packages are unused depending on -include CLI option.
+// This prevents compile error when corresponding functions are not defined.
+var _ = (algebra.Monoid[int])(nil)
+var _ = (cmp.Ord[int])(nil)
+var _ = (iterator.Iterator[int])(nil)
+var _ = (*pair.Pair[int, int])(nil)
+
 `
 
-var funcs = map[string]string{
+var allFuncs = map[string]string{
 	"Find": `
 // Find returns a first element in xs that satisfies the given predicate fn.
 // It returns false as a second return value if no elements are found.

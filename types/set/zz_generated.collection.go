@@ -9,6 +9,13 @@ import (
 	"github.com/genkami/dogs/types/pair"
 )
 
+// Some packages are unused depending on -include CLI option.
+// This prevents compile error when corresponding functions are not defined.
+var _ = (algebra.Monoid[int])(nil)
+var _ = (cmp.Ord[int])(nil)
+var _ = (iterator.Iterator[int])(nil)
+var _ = (*pair.Pair[int, int])(nil)
+
 // Find returns a first element in xs that satisfies the given predicate fn.
 // It returns false as a second return value if no elements are found.
 func Find[T comparable](xs Set[T], fn func(T) bool) (T, bool) {
@@ -19,18 +26,6 @@ func Find[T comparable](xs Set[T], fn func(T) bool) (T, bool) {
 // It returns false as a second return value if no elements are found.
 func FindElem[T comparable](xs Set[T], e T, eq cmp.Eq[T]) (T, bool) {
 	return iterator.FindElem[T](xs.Iter(), e, eq)
-}
-
-// FindElemIndex returns a first index of an element in xs that equals to e in the sense of given Eq.
-// It returns negative value if no elements are found.
-func FindElemIndex[T comparable](xs Set[T], e T, eq cmp.Eq[T]) int {
-	return iterator.FindElemIndex[T](xs.Iter(), e, eq)
-}
-
-// FindIndex returns a first index of an element in xs that satisfies the given predicate fn.
-// It returns negative value if no elements are found.
-func FindIndex[T comparable](xs Set[T], fn func(T) bool) int {
-	return iterator.FindIndex[T](xs.Iter(), fn)
 }
 
 // Fold accumulates every element in a collection by applying fn.
@@ -53,9 +48,4 @@ func Sum[T comparable](xs Set[T], m algebra.Monoid[T]) T {
 // SumWithInit sums up init and all values in xs.
 func SumWithInit[T comparable](init T, xs Set[T], s algebra.Semigroup[T]) T {
 	return Fold[T, T](init, xs, s.Combine)
-}
-
-// Zip combines two collections into one that contains pairs of corresponding elements.
-func Zip[T, U comparable](a Set[T], b Set[U]) Set[pair.Pair[T, U]] {
-	return FromIterator[pair.Pair[T, U]](iterator.Zip(a.Iter(), b.Iter()))
 }

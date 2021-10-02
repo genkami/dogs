@@ -9,6 +9,13 @@ import (
 	"github.com/genkami/dogs/types/pair"
 )
 
+// Some packages are unused depending on -include CLI option.
+// This prevents compile error when corresponding functions are not defined.
+var _ = (algebra.Monoid[int])(nil)
+var _ = (cmp.Ord[int])(nil)
+var _ = (iterator.Iterator[int])(nil)
+var _ = (*pair.Pair[int, int])(nil)
+
 // Find returns a first element in xs that satisfies the given predicate fn.
 // It returns false as a second return value if no elements are found.
 func Find[T any](xs Slice[T], fn func(T) bool) (T, bool) {
