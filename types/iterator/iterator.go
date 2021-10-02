@@ -94,7 +94,16 @@ func Fold[T, U any](init T, it Iterator[U], fn func(T, U) T) T {
 	return acc
 }
 
-// TODO: ForEach
+// ForEach applies fn to each element in it.
+func ForEach[T any](it Iterator[T], fn func(T)) {
+	for {
+		x, ok := it.Next()
+		if !ok {
+			return
+		}
+		fn(x)
+	}
+}
 
 // Zip combines two Iterators into one that yields pairs of corresponding elements.
 func Zip[T, U any](a Iterator[T], b Iterator[U]) Iterator[pair.Pair[T, U]] {

@@ -132,6 +132,48 @@ func TestMap(t *testing.T) {
 	assert.Equal(t, subject([]int{1, 2, 3}), []string{"1", "2", "3"})
 }
 
+func TestForEach(t *testing.T) {
+	iter := func(xs ...int) iterator.Iterator[int] {
+		return slice.Slice[int](xs).Iter()
+	}
+
+	t.Run("empty", func(t *testing.T) {
+		numCalled := 0
+		args := []int{}
+		iterator.ForEach(iter(), func(i int) {
+			numCalled++
+			args = append(args, i)
+		})
+
+		assert.Equal(t, numCalled, 0)
+		assert.Equal(t, args, []int{})
+	})
+
+	t.Run("singleton", func(t *testing.T) {
+		numCalled := 0
+		args := []int{}
+		iterator.ForEach(iter(3), func(i int) {
+			numCalled++
+			args = append(args, i)
+		})
+
+		assert.Equal(t, numCalled, 1)
+		assert.Equal(t, args, []int{3})
+	})
+
+	t.Run("many", func(t *testing.T) {
+		numCalled := 0
+		args := []int{}
+		iterator.ForEach(iter(1, 2, 3, 4, 5), func(i int) {
+			numCalled++
+			args = append(args, i)
+		})
+
+		assert.Equal(t, numCalled, 5)
+		assert.Equal(t, args, []int{1, 2, 3, 4, 5})
+	})
+}
+
 func TestFold(t *testing.T) {
 	add := func(x string, y int) string {
 		return x + strconv.FormatInt(int64(y), 10)
