@@ -154,6 +154,12 @@ func FindElemIndex[T {{ .Constraint }}](xs {{ .TypeName }}[T], e T, eq cmp.Eq[T]
 	return iterator.FindElemIndex[T](xs.Iter(), e, eq)
 }
 `,
+	"Filter": `
+// Filter returns a collection that only returns elements that satisfies given predicate.
+func Filter[T {{ .Constraint }}](xs {{ .TypeName }}[T], fn func(T) bool) {{ .TypeName }}[T] {
+	return FromIterator[T](iterator.Filter[T](xs.Iter(), fn))
+}
+`,
 	"Map": `
 // Map returns a collection that applies fn to each element of xs.
 func Map[T, U {{ .Constraint }}](xs {{ .TypeName }}[T], fn func(T) U) {{ .TypeName }}[U] {

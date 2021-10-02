@@ -16,6 +16,11 @@ var _ = (cmp.Ord[int])(nil)
 var _ = (iterator.Iterator[int])(nil)
 var _ = (*pair.Pair[int, int])(nil)
 
+// Filter returns a collection that only returns elements that satisfies given predicate.
+func Filter[T any](xs Slice[T], fn func(T) bool) Slice[T] {
+	return FromIterator[T](iterator.Filter[T](xs.Iter(), fn))
+}
+
 // Find returns a first element in xs that satisfies the given predicate fn.
 // It returns false as a second return value if no elements are found.
 func Find[T any](xs Slice[T], fn func(T) bool) (T, bool) {
