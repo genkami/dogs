@@ -145,6 +145,23 @@ func TestFilter(t *testing.T) {
 	assertEqual([]int{2, 4, 6, 8, 10}, []int{2, 4, 6, 8, 10}, func(i int) bool { return i%2 == 0 })
 }
 
+func TestTake(t *testing.T) {
+	subject := func(xs []int, n int) []int {
+		it := iterator.Take(slice.Slice[int](xs).Iter(), n)
+		return ([]int)(slice.FromIterator(it))
+	}
+
+	assert.Equal(t, subject([]int{}, 0), []int{})
+	assert.Equal(t, subject([]int{}, 1), []int{})
+	assert.Equal(t, subject([]int{}, 2), []int{})
+
+	assert.Equal(t, subject([]int{3, 4, 5}, 0), []int{})
+	assert.Equal(t, subject([]int{3, 4, 5}, 1), []int{3})
+	assert.Equal(t, subject([]int{3, 4, 5}, 2), []int{3, 4})
+	assert.Equal(t, subject([]int{3, 4, 5}, 3), []int{3, 4, 5})
+	assert.Equal(t, subject([]int{3, 4, 5}, 4), []int{3, 4, 5})
+}
+
 func TestMap(t *testing.T) {
 	subject := func(xs []int) []string {
 		it := slice.Slice[int](xs).Iter()

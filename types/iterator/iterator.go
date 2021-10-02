@@ -109,7 +109,33 @@ func (it *filterIterator[T]) Next() (T, bool) {
 	}
 }
 
-// TODO: Take(it, n)
+// Taks takes the first n elements in `it`.
+func Take[T any](it Iterator[T], n int) Iterator[T] {
+	return &takeIterator[T]{
+		it: it,
+		n:  n,
+		i:  0,
+	}
+}
+
+type takeIterator[T any] struct {
+	it   Iterator[T]
+	n, i int
+}
+
+func (it *takeIterator[T]) Next() (T, bool) {
+	var zero T
+	if it.n <= it.i {
+		return zero, false
+	}
+	it.i++
+	x, ok := it.it.Next()
+	if !ok {
+		return zero, false
+	}
+	return x, true
+}
+
 // TODO: Drop(it, n)
 
 // Map returns an iterator that applies fn to each element of it.
