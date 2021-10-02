@@ -17,6 +17,8 @@ func (p Pair[T, U]) Values() (T, U) {
 	return p.First, p.Second
 }
 
+// TODO: rename derivation functions to Derive<ClassName>[For<TypeName>]
+
 // DerivePairEq derives Eq[Pair[T, U]] from Eq[T] and Eq[U].
 func DerivePairEq[T, U any](et cmp.Eq[T], eu cmp.Eq[U]) cmp.Eq[Pair[T, U]] {
 	return &cmp.DefaultEq[Pair[T, U]]{

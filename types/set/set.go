@@ -9,7 +9,6 @@ type Set[T comparable] map[T]struct{}
 //go:generate gotip run ../../cmd/gen-collection -pkg set -name Set -constraint comparable -out zz_generated.collection.go
 //go:generate gotip fmt ./zz_generated.collection.go
 
-
 // New creates a new Set.
 func New[T comparable](elems ...T) Set[T] {
 	s := Set[T]{}
@@ -17,6 +16,47 @@ func New[T comparable](elems ...T) Set[T] {
 		Add[T](s, e)
 	}
 	return s
+}
+
+// Has returns true if and only if s has e.
+func Has[T comparable](s Set[T], e T) bool {
+	_, ok := s[e]
+	return ok
+}
+
+// Len returns the number of elements in s.
+func Len[T comparable](s Set[T]) int {
+	return len(s)
+}
+
+// Subset returns true if and only if s is a subset of t.
+func Subset[T comparable](s, t Set[T]) bool {
+	for e := range s {
+		if _, ok := t[e]; !ok {
+			return false
+		}
+	}
+	return true
+}
+
+// Equal returns true if and only if the two sets s and t have exactly the same elements.
+func Equal[T comparable](s, t Set[T]) bool {
+	return Subset(s, t) && Subset(t, s)
+}
+
+// Add adds an element e to set s.
+func Add[T comparable](s Set[T], e T) {
+	s[e] = struct{}{}
+}
+
+// Remove removes an element e from set s.
+// If returns false if and only if s doesn't have e.
+func Remove[T comparable](s Set[T], e T) bool {
+	if _, ok := s[e]; !ok {
+		return false
+	}
+	delete(s, e)
+	return true
 }
 
 // FromIterator returns a Set from given Iterator.
@@ -47,34 +87,7 @@ func (s Set[T]) Iter() iterator.Iterator[T] {
 	})
 }
 
-
-
-// Add adds an element e to set s.
-func Add[T comparable](s Set[T], e T) {
-	s[e] = struct{}{}
-}
-
-// Remove removes an element e from set s.
-// If returns false if and only if s doesn't have e.
-func Remove[T comparable](s Set[T], e T) bool {
-	if _, ok := s[e]; !ok {
-		return false
-	}
-	delete(s, e)
-	return true
-}
-
-// Has returns true if and only if s has e.
-func Has[T comparable](s Set[T], e T) bool {
-	_, ok := s[e]
-	return ok
-}
-
-// Len returns the number of elements in s.
-func Len[T comparable](s Set[T]) int {
-	return len(s)
-}
-
+// TODO: DeriveEq[T] Eq[Set[T]]
 // TODO: Elems[T](s Set[T]) []T
 // TODO: Merge[T](s, t Set[T]) Set[T]
 // TODO: Union[T](s, t Set[T]) Set[T]
