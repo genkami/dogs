@@ -1,6 +1,7 @@
 package option_test
 
 import (
+	"github.com/genkami/dogs/classes/algebra"
 	"github.com/genkami/dogs/types/option"
 	"github.com/genkami/dogs/types/slice"
 	"github.com/stretchr/testify/assert"
@@ -65,4 +66,24 @@ func TestIter(t *testing.T) {
 	assert.Equal(t, some(1), []int{1})
 	assert.Equal(t, some(2), []int{2})
 	assert.Equal(t, some(3), []int{3})
+}
+
+func TestDeriveSemigroup(t *testing.T) {
+	some := func(x int) option.Option[int] {
+		return option.Some[int](x)
+	}
+	none := func() option.Option[int] {
+		return option.None[int]()
+	}
+
+	intSemi := algebra.DeriveAdditiveSemigroup[int]()
+	optSemi := option.DeriveSemigroup(intSemi)
+
+	subject := func(x, y option.Option[int]) option.Option[int] {
+		return optSemi.Combine(x, y)
+	}
+
+	assert.True(t, option.Equal(subject(some(123), some(456)), some(579)))
+	assert.True(t, option.Equal(subject(some(123), none()), some(123)))
+	assert.True(t, option.Equal(subject(none(), some(456)), some(456)))
 }

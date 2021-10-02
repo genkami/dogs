@@ -1,6 +1,9 @@
 package option
 
-import "github.com/genkami/dogs/types/iterator"
+import (
+	"github.com/genkami/dogs/classes/algebra"
+	"github.com/genkami/dogs/types/iterator"
+)
 
 // Option is an optional value.
 type Option[T any] struct {
@@ -114,5 +117,21 @@ func (it *optionIterator[T]) Next() (T, bool) {
 
 // TODO: func DeriveEq[T any](eq cmp.Eq[T]) cmp.Eq[Option[T]]
 // TODO: func DeriveOrd[T any](ord cmp.Ord[T]) cmp.Ord[Option[T]]
+
+// DeriveSemigroup derives Semigroup[Option[T]] from Semigroup[T]
+func DeriveSemigroup[T any](s algebra.Semigroup[T]) algebra.Semigroup[Option[T]] {
+	return &algebra.DefaultSemigroup[Option[T]]{
+		CombineImpl: func(x, y Option[T]) Option[T] {
+			if !IsSome(x) {
+				return y
+			}
+			if !IsSome(y) {
+				return x
+			}
+			return Some(s.Combine(Unwrap(x), Unwrap(y)))
+		},
+	}
+}
+
 // TODO: func DeriveSemigroup[T any](s algebra.Semigroup[T]) algebra.Semigroup[Option[T]]
 // TODO: func DeriveMonoid[T any](s algebra.Semigroup[T]) algebra.Monoid[Option[T]] (note that T doesn't need to be Monoid)
