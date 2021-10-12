@@ -72,11 +72,17 @@ func main() {
 		fmt.Fprintf(os.Stderr, "gen-functions: failed to prepare template: %s\n", err.Error())
 		os.Exit(1)
 	}
-	err = tmpl.Execute(w, map[string]string{
+	params := map[string]string{
 		"PkgName":    pkgName,
 		"TypeName":   typeName,
 		"Constraint": constraint,
-	})
+	}
+	if pkgName == "iterator" {
+		params["IterPrefix"] = ""
+	} else {
+		params["IterPrefix"] = "iterator."
+	}
+	err = tmpl.Execute(w, params)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "gen-functions: failed to write template: %s\n", err.Error())
 		os.Exit(1)
@@ -123,21 +129,22 @@ package {{ .PkgName }}
 import (
 	"github.com/genkami/dogs/classes/algebra"
 	"github.com/genkami/dogs/classes/cmp"
-	"github.com/genkami/dogs/types/iterator"
 	"github.com/genkami/dogs/types/pair"
+	{{ if ne .IterPrefix "" }}"github.com/genkami/dogs/types/iterator"{{ end }}
 )
 
 // Some packages are unused depending on -include CLI option.
 // This prevents compile error when corresponding functions are not defined.
 var _ = (algebra.Monoid[int])(nil)
 var _ = (cmp.Ord[int])(nil)
-var _ = (iterator.Iterator[int])(nil)
+var _ = ({{ .IterPrefix }}Iterator[int])(nil)
 var _ = (*pair.Pair[int, int])(nil)
 
 `
 
 var allTemplates = map[string]map[string]string{
 	"Collection": collectionTmpl,
+	"Monad":      monadTmpl,
 }
 
 var collectionTmpl = map[string]string{
@@ -145,58 +152,58 @@ var collectionTmpl = map[string]string{
 // Find returns a first element in xs that satisfies the given predicate fn.
 // It returns false as a second return value if no elements are found.
 func Find[T {{ .Constraint }}](xs {{ .TypeName }}[T], fn func(T) bool) (T, bool) {
-	return iterator.Find[T](xs.Iter(), fn)
+	return {{ .IterPrefix }}Find[T](xs.Iter(), fn)
 }
 `,
 	"FindIndex": `
 // FindIndex returns a first index of an element in xs that satisfies the given predicate fn.
 // It returns negative value if no elements are found.
 func FindIndex[T {{ .Constraint }}](xs {{ .TypeName }}[T], fn func(T) bool) int {
-	return iterator.FindIndex[T](xs.Iter(), fn)
+	return {{ .IterPrefix }}FindIndex[T](xs.Iter(), fn)
 }
 `,
 	"FindElem": `
 // FindElem returns a first element in xs that equals to e in the sense of given Eq.
 // It returns false as a second return value if no elements are found.
 func FindElem[T {{ .Constraint }}](xs {{ .TypeName }}[T], e T, eq cmp.Eq[T]) (T, bool) {
-	return iterator.FindElem[T](xs.Iter(), e, eq)
+	return {{ .IterPrefix }}FindElem[T](xs.Iter(), e, eq)
 }
 `,
 	"FindElemIndex": `
 // FindElemIndex returns a first index of an element in xs that equals to e in the sense of given Eq.
 // It returns negative value if no elements are found.
 func FindElemIndex[T {{ .Constraint }}](xs {{ .TypeName }}[T], e T, eq cmp.Eq[T]) int {
-	return iterator.FindElemIndex[T](xs.Iter(), e, eq)
+	return {{ .IterPrefix }}FindElemIndex[T](xs.Iter(), e, eq)
 }
 `,
 	"Filter": `
 // Filter returns a collection that only returns elements that satisfies given predicate.
 func Filter[T {{ .Constraint }}](xs {{ .TypeName }}[T], fn func(T) bool) {{ .TypeName }}[T] {
-	return FromIterator[T](iterator.Filter[T](xs.Iter(), fn))
+	return FromIterator[T]({{ .IterPrefix }}Filter[T](xs.Iter(), fn))
 }
 `,
 	"Map": `
 // Map returns a collection that applies fn to each element of xs.
 func Map[T, U {{ .Constraint }}](xs {{ .TypeName }}[T], fn func(T) U) {{ .TypeName }}[U] {
-	return FromIterator[U](iterator.Map[T, U](xs.Iter(), fn))
+	return FromIterator[U]({{ .IterPrefix }}Map[T, U](xs.Iter(), fn))
 }
 `,
 	"ForEach": `
 // ForEach applies fn to each element in xs.
 func ForEach[T {{ .Constraint }}](xs {{ .TypeName }}[T], fn func(T)) {
-	iterator.ForEach[T](xs.Iter(), fn)
+	{{ .IterPrefix }}ForEach[T](xs.Iter(), fn)
 }
 `,
 	"Fold": `
 // Fold accumulates every element in a collection by applying fn.
 func Fold[T any, U {{ .Constraint }}](init T, xs {{ .TypeName }}[U], fn func(T, U) T) T {
-	return iterator.Fold[T, U](init, xs.Iter(), fn)
+	return {{ .IterPrefix }}Fold[T, U](init, xs.Iter(), fn)
 }
 `,
 	"Zip": `
 // Zip combines two collections into one that contains pairs of corresponding elements.
 func Zip[T, U {{ .Constraint }}](a {{ .TypeName }}[T], b {{ .TypeName }}[U]) {{ .TypeName }}[pair.Pair[T, U]] {
-	return FromIterator[pair.Pair[T, U]](iterator.Zip(a.Iter(), b.Iter()))
+	return FromIterator[pair.Pair[T, U]]({{ .IterPrefix }}Zip(a.Iter(), b.Iter()))
 }
 `,
 	"SumWithInit": `
@@ -211,6 +218,19 @@ func SumWithInit[T {{ .Constraint }}](init T, xs {{ .TypeName }}[T], s algebra.S
 func Sum[T {{ .Constraint }}](xs {{ .TypeName }}[T], m algebra.Monoid[T]) T {
 	var s algebra.Semigroup[T] = m
 	return SumWithInit[T](m.Empty(), xs, s)
+}
+`,
+}
+
+var monadTmpl = map[string]string{
+	"LiftM": `
+// LiftM promotes a function fn to a monad.
+func LiftM[T, U {{ .Constraint }}](fn func(T) U) func({{ .TypeName }}[T]) {{ .TypeName }}[U] {
+	return func(mt {{ .TypeName }}[T]) {{ .TypeName }}[U] {
+		return AndThen[T, U](mt, func(t T) {{ .TypeName }}[U] {
+			return Pure(fn(t))
+		})
+	}
 }
 `,
 }
