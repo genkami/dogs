@@ -294,3 +294,29 @@ func Sum[T any](it Iterator[T], m algebra.Monoid[T]) T {
 	var s algebra.Semigroup[T] = m
 	return SumWithInit[T](m.Empty(), it, s)
 }
+
+// Pure returns an Iterator that contains a single element x.
+func Pure[T any](x T) Iterator[T] {
+	return &pureIterator[T]{
+		x: x,
+	}
+}
+
+type pureIterator[T any] struct {
+	x        T
+	finished bool
+}
+
+func (it *pureIterator[T]) Next() (T, bool) {
+	var zero T
+	if it.finished {
+		return zero, false
+	}
+	it.finished = true
+	return it.x, true
+}
+
+// AndThen composes a monadic value x and action fn.
+func AndThen[T, U any](x Iterator[T], fn func(T) Iterator[U]) Iterator[U] {
+	return FlatMap(x, fn)
+}

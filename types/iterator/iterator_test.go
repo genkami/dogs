@@ -368,6 +368,17 @@ func TestSum(t *testing.T) {
 	})
 }
 
+func TestPure(t *testing.T) {
+	subject := func(x int) []int {
+		it := iterator.Pure(x)
+		return toSlice(it)
+	}
+
+	assert.Equal(t, subject(1), []int{1})
+	assert.Equal(t, subject(2), []int{2})
+	assert.Equal(t, subject(3), []int{3})
+}
+
 func toSlice[T any](it iterator.Iterator[T]) []T {
 	return iterator.Fold[[]T, T](
 		make([]T, 0),
