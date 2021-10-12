@@ -160,6 +160,47 @@ func (it *mapIterator[T, U]) Next() (U, bool) {
 	return it.fn(x), true
 }
 
+// FlatMap applies fn to each element in it and then joins them.
+func FlatMap[T, U any](it Iterator[T], fn func(T) Iterator[U]) Iterator[U] {
+	return &flatMapIterator[T, U]{
+		it: it,
+		fn: fn,
+	}
+}
+
+type flatMapIterator[T, U any] struct {
+	it       Iterator[T]
+	cur      Iterator[U]
+	fn       func(T) Iterator[U]
+	finished bool
+}
+
+func (it *flatMapIterator[T, U]) Next() (U, bool) {
+	var zero U
+	if it.finished {
+		return zero, false
+	}
+	if it.cur != nil {
+		x, ok := it.cur.Next()
+		if ok {
+			return x, true
+		}
+	}
+	// cur == nil or cur is finished
+	for {
+		next, ok := it.it.Next()
+		if !ok {
+			it.finished = true
+			return zero, false
+		}
+		it.cur = it.fn(next)
+		x, ok := it.cur.Next()
+		if ok {
+			return x, true
+		}
+	}
+}
+
 // Fold accumulates every element in Iterator by applying fn.
 func Fold[T, U any](init T, it Iterator[U], fn func(T, U) T) T {
 	var acc T = init

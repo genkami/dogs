@@ -1,6 +1,7 @@
 package iterator_test
 
 import (
+	"fmt"
 	"github.com/genkami/dogs/classes/algebra"
 	"github.com/genkami/dogs/classes/cmp"
 	"github.com/genkami/dogs/types/iterator"
@@ -175,6 +176,26 @@ func TestMap(t *testing.T) {
 	assert.Equal(t, subject([]int{1}), []string{"1"})
 	assert.Equal(t, subject([]int{1, 2}), []string{"1", "2"})
 	assert.Equal(t, subject([]int{1, 2, 3}), []string{"1", "2", "3"})
+}
+
+func TestFlatMap(t *testing.T) {
+	subject := func(xs ...int) []string {
+		it := slice.Slice[int](xs).Iter()
+		mapped := iterator.FlatMap(it, func(x int) iterator.Iterator[string] {
+			strs := make([]string, 0, x)
+			for i := 0; i < x; i++ {
+				strs = append(strs, fmt.Sprint(x))
+			}
+			return slice.Slice[string](strs).Iter()
+		})
+		return toSlice(mapped)
+	}
+
+	assert.Equal(t, subject(), []string{})
+	assert.Equal(t, subject(1), []string{"1"})
+	assert.Equal(t, subject(2), []string{"2", "2"})
+
+	assert.Equal(t, subject(2, 3, 0, 1), []string{"2", "2", "3", "3", "3", "1"})
 }
 
 func TestForEach(t *testing.T) {
