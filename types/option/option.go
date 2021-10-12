@@ -11,7 +11,7 @@ type Option[T any] struct {
 	v    T
 }
 
-//go:generate gotip run ../../cmd/gen-collection -pkg option -name Option -exclude FindElemIndex,FindIndex,Zip -out zz_generated.collection.go
+//go:generate gotip run ../../cmd/gen-functions -pkg option -name Option -exclude FindElemIndex,FindIndex,Zip -out zz_generated.collection.go
 //go:generate gotip fmt ./zz_generated.collection.go
 
 // Some returns an Option that consists of x.
