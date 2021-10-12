@@ -3,7 +3,7 @@
 //
 //     import "github.com/genkami/dogs/types/iterator"
 //
-//     // go:generate go run .../../cmd/gen-functions -pkg yourcollection -name YourCollection -out zz_generated.collection.go
+//     // go:generate go run .../../cmd/gen-functions -template Collection -pkg yourcollection -name YourCollection -out zz_generated.collection.go
 //     type YourCollection[T] struct { ... }
 //     func FromIterator[T any](it iterator.Iterator[T]) YourCollection[T] { ... }
 //     func (xs YourCollection[T]) Iter() iterator.Iterator[T] { ... }
@@ -22,6 +22,7 @@ import (
 
 func main() {
 	var (
+		tmplName   string
 		pkgName    string
 		typeName   string
 		constraint string
@@ -29,6 +30,7 @@ func main() {
 		output     string
 	)
 
+	flag.StringVar(&tmplName, "template", "", "the name of the template to generate")
 	flag.StringVar(&pkgName, "pkg", "", "the name of the package")
 	flag.StringVar(&typeName, "name", "", "the name of the type")
 	flag.StringVar(&constraint, "constraint", "any", "type constraint that the type argument of this type should satisfy")
@@ -36,6 +38,10 @@ func main() {
 	flag.StringVar(&output, "out", "", "path to output")
 	flag.Parse()
 
+	if tmplName == "" {
+		fmt.Fprint(os.Stderr, "gen-functions: missiong -template\n")
+		os.Exit(1)
+	}
 	if pkgName == "" {
 		fmt.Fprintf(os.Stderr, "gen-functions: missing -pkg\n")
 		os.Exit(1)
@@ -61,7 +67,7 @@ func main() {
 		denyList = strings.Split(exclude, ",")
 	}
 
-	tmpl, err := generateTemplate(denyList)
+	tmpl, err := generateTemplate(tmplName, denyList)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "gen-functions: failed to prepare template: %s\n", err.Error())
 		os.Exit(1)
@@ -77,9 +83,14 @@ func main() {
 	}
 }
 
-func generateTemplate(denyList []string) (*template.Template, error) {
+func generateTemplate(tmplName string, denyList []string) (*template.Template, error) {
 	var buf bytes.Buffer
 	buf.WriteString(header)
+
+	allFuncs, ok := allTemplates[tmplName]
+	if !ok {
+		return nil, fmt.Errorf("template %s not found", tmplName)
+	}
 
 	denyMap := make(map[string]struct{})
 	for _, denied := range denyList {
@@ -125,7 +136,11 @@ var _ = (*pair.Pair[int, int])(nil)
 
 `
 
-var allFuncs = map[string]string{
+var allTemplates = map[string]map[string]string{
+	"Collection": collectionTmpl,
+}
+
+var collectionTmpl = map[string]string{
 	"Find": `
 // Find returns a first element in xs that satisfies the given predicate fn.
 // It returns false as a second return value if no elements are found.
