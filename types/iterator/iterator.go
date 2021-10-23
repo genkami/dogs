@@ -337,8 +337,19 @@ func MinBy[T any](it Iterator[T], less func(T, T) bool) (T, bool) {
 	return min, true
 }
 
-// TODO: Max
-// TODO: MaxBy
+// Max returns the largest element with respect to the given Ord.
+// It returns `<zero value>, false` if the iterator is empty.
+func Max[T any](ord cmp.Ord[T]) func(it Iterator[T]) (T, bool) {
+	return func(it Iterator[T]) (T, bool) {
+		return MaxBy(it, ord.Lt)
+	}
+}
+
+// MaxBy returns the largest element with respect to the given function.
+// It returns `<zero value>, false` if the iterator is empty.
+func MaxBy[T any](it Iterator[T], less func(T, T) bool) (T, bool) {
+	return MinBy(it, func(x, y T) bool { return less(y, x) })
+}
 
 // Pure returns an Iterator that contains a single element x.
 func Pure[T any](x T) Iterator[T] {

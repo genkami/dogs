@@ -404,6 +404,42 @@ func TestMinBy(t *testing.T) {
 	assertFound("many", []int{5, 3, 9, 4, 6}, 3)
 }
 
+func TestMax(t *testing.T) {
+	ord := cmp.DeriveOrd[int]()
+	assertFound := func(name string, xs []int, expected int) {
+		min, ok := iterator.Max(ord)(slice.Slice[int](xs).Iter())
+		assert.True(t, ok, name)
+		assert.Equal(t, expected, min, name)
+	}
+	assertNotFound := func(name string, xs []int) {
+		_, ok := iterator.Max(ord)(slice.Slice[int](xs).Iter())
+		assert.False(t, ok)
+	}
+
+	assertNotFound("empty", []int{})
+	assertFound("one", []int{3}, 3)
+	assertFound("two", []int{3, 2}, 3)
+	assertFound("many", []int{5, 3, 9, 4, 6}, 9)
+}
+
+func TestMaxBy(t *testing.T) {
+	less := func(x, y int) bool { return x < y }
+	assertFound := func(name string, xs []int, expected int) {
+		min, ok := iterator.MaxBy(slice.Slice[int](xs).Iter(), less)
+		assert.True(t, ok, name)
+		assert.Equal(t, expected, min, name)
+	}
+	assertNotFound := func(name string, xs []int) {
+		_, ok := iterator.MaxBy(slice.Slice[int](xs).Iter(), less)
+		assert.False(t, ok)
+	}
+
+	assertNotFound("empty", []int{})
+	assertFound("one", []int{3}, 3)
+	assertFound("two", []int{3, 2}, 3)
+	assertFound("many", []int{5, 3, 9, 4, 6}, 9)
+}
+
 func TestPure(t *testing.T) {
 	subject := func(x int) []int {
 		it := iterator.Pure(x)
