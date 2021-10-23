@@ -50,12 +50,16 @@ func Map[T, U any](xs Option[T], fn func(T) U) Option[U] {
 
 // Sum sums up all values in xs.
 // It returns m.Empty() when xs is empty.
-func Sum[T any](xs Option[T], m algebra.Monoid[T]) T {
-	var s algebra.Semigroup[T] = m
-	return SumWithInit[T](m.Empty(), xs, s)
+func Sum[T any](m algebra.Monoid[T]) func(xs Option[T]) T {
+	return func(xs Option[T]) T {
+		var s algebra.Semigroup[T] = m
+		return SumWithInit[T](s)(m.Empty(), xs)
+	}
 }
 
 // SumWithInit sums up init and all values in xs.
-func SumWithInit[T any](init T, xs Option[T], s algebra.Semigroup[T]) T {
-	return Fold[T, T](init, xs, s.Combine)
+func SumWithInit[T any](s algebra.Semigroup[T]) func(init T, xs Option[T]) T {
+	return func(init T, xs Option[T]) T {
+		return Fold[T, T](init, xs, s.Combine)
+	}
 }

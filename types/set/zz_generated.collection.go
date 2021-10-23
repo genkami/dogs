@@ -50,12 +50,16 @@ func Map[T, U comparable](xs Set[T], fn func(T) U) Set[U] {
 
 // Sum sums up all values in xs.
 // It returns m.Empty() when xs is empty.
-func Sum[T comparable](xs Set[T], m algebra.Monoid[T]) T {
-	var s algebra.Semigroup[T] = m
-	return SumWithInit[T](m.Empty(), xs, s)
+func Sum[T comparable](m algebra.Monoid[T]) func(xs Set[T]) T {
+	return func(xs Set[T]) T {
+		var s algebra.Semigroup[T] = m
+		return SumWithInit[T](s)(m.Empty(), xs)
+	}
 }
 
 // SumWithInit sums up init and all values in xs.
-func SumWithInit[T comparable](init T, xs Set[T], s algebra.Semigroup[T]) T {
-	return Fold[T, T](init, xs, s.Combine)
+func SumWithInit[T comparable](s algebra.Semigroup[T]) func(init T, xs Set[T]) T {
+	return func(init T, xs Set[T]) T {
+		return Fold[T, T](init, xs, s.Combine)
+	}
 }

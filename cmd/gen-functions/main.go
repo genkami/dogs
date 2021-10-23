@@ -208,16 +208,20 @@ func Zip[T, U {{ .Constraint }}](a {{ .TypeName }}[T], b {{ .TypeName }}[U]) {{ 
 `,
 	"SumWithInit": `
 // SumWithInit sums up init and all values in xs.
-func SumWithInit[T {{ .Constraint }}](init T, xs {{ .TypeName }}[T], s algebra.Semigroup[T]) T {
-	return Fold[T, T](init, xs, s.Combine)
+func SumWithInit[T {{ .Constraint }}](s algebra.Semigroup[T]) func(init T, xs {{ .TypeName }}[T]) T {
+	return func(init T, xs {{ .TypeName }}[T]) T {
+		return Fold[T, T](init, xs, s.Combine)
+	}
 }
 `,
 	"Sum": `
 // Sum sums up all values in xs.
 // It returns m.Empty() when xs is empty.
-func Sum[T {{ .Constraint }}](xs {{ .TypeName }}[T], m algebra.Monoid[T]) T {
-	var s algebra.Semigroup[T] = m
-	return SumWithInit[T](m.Empty(), xs, s)
+func Sum[T {{ .Constraint }}](m algebra.Monoid[T]) func(xs {{ .TypeName }}[T]) T {
+	return func(xs {{ .TypeName }}[T]) T {
+		var s algebra.Semigroup[T] = m
+		return SumWithInit[T](s)(m.Empty(), xs)
+	}
 }
 `,
 }

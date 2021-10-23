@@ -324,7 +324,7 @@ func TestUnfold(t *testing.T) {
 func TestSumWithInit(t *testing.T) {
 	intSemigroup := algebra.DeriveAdditiveSemigroup[int]()
 	subject := func(x int, xs []int) int {
-		return iterator.SumWithInit(x, slice.Slice[int](xs).Iter(), intSemigroup)
+		return iterator.SumWithInit(intSemigroup)(x, slice.Slice[int](xs).Iter())
 	}
 
 	t.Run("empty", func(t *testing.T) {
@@ -348,7 +348,7 @@ func TestSumWithInit(t *testing.T) {
 func TestSum(t *testing.T) {
 	intMonoid := algebra.DeriveAdditiveMonoid[int]()
 	subject := func(xs []int) int {
-		return iterator.Sum(slice.Slice[int](xs).Iter(), intMonoid)
+		return iterator.Sum(intMonoid)(slice.Slice[int](xs).Iter())
 	}
 
 	t.Run("empty", func(t *testing.T) {

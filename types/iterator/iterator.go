@@ -287,16 +287,25 @@ func (it *unfoldIterator[T, U]) Next() (U, bool) {
 }
 
 // SumWithInit sums up `init` and all values in `it`.
-func SumWithInit[T any](init T, it Iterator[T], s algebra.Semigroup[T]) T {
-	return Fold[T, T](init, it, s.Combine)
+func SumWithInit[T any](s algebra.Semigroup[T]) func(init T, it Iterator[T]) T {
+	return func(init T, it Iterator[T]) T {
+		return Fold[T, T](init, it, s.Combine)
+	}
 }
 
 // Sum sums up all values in `it`.
 // It returns `Empty()` when `it` is empty.
-func Sum[T any](it Iterator[T], m algebra.Monoid[T]) T {
-	var s algebra.Semigroup[T] = m
-	return SumWithInit[T](m.Empty(), it, s)
+func Sum[T any](m algebra.Monoid[T]) func(it Iterator[T]) T {
+	return func(it Iterator[T]) T {
+		var s algebra.Semigroup[T] = m
+		return SumWithInit[T](s)(m.Empty(), it)
+	}
 }
+
+// TODO: Min
+// TODO: MinBy
+// TODO: Max
+// TODO: MaxBy
 
 // Pure returns an Iterator that contains a single element x.
 func Pure[T any](x T) Iterator[T] {

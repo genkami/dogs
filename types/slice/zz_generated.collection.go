@@ -62,14 +62,18 @@ func Map[T, U any](xs Slice[T], fn func(T) U) Slice[U] {
 
 // Sum sums up all values in xs.
 // It returns m.Empty() when xs is empty.
-func Sum[T any](xs Slice[T], m algebra.Monoid[T]) T {
-	var s algebra.Semigroup[T] = m
-	return SumWithInit[T](m.Empty(), xs, s)
+func Sum[T any](m algebra.Monoid[T]) func(xs Slice[T]) T {
+	return func(xs Slice[T]) T {
+		var s algebra.Semigroup[T] = m
+		return SumWithInit[T](s)(m.Empty(), xs)
+	}
 }
 
 // SumWithInit sums up init and all values in xs.
-func SumWithInit[T any](init T, xs Slice[T], s algebra.Semigroup[T]) T {
-	return Fold[T, T](init, xs, s.Combine)
+func SumWithInit[T any](s algebra.Semigroup[T]) func(init T, xs Slice[T]) T {
+	return func(init T, xs Slice[T]) T {
+		return Fold[T, T](init, xs, s.Combine)
+	}
 }
 
 // Zip combines two collections into one that contains pairs of corresponding elements.
