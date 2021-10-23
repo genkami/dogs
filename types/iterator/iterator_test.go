@@ -88,7 +88,7 @@ func TestFindElem(t *testing.T) {
 	assertFound := func(name string, xs []int, x int) {
 		t.Run(name, func(t *testing.T) {
 			it := slice.Slice[int](xs).Iter()
-			found, ok := iterator.FindElem[int](it, x, eq)
+			found, ok := iterator.FindElem[int](eq)(it, x)
 			assert.True(t, ok)
 			assert.Equal(t, found, x)
 		})
@@ -96,7 +96,7 @@ func TestFindElem(t *testing.T) {
 	assertNotFound := func(name string, xs []int, x int) {
 		t.Run(name, func(t *testing.T) {
 			it := slice.Slice[int](xs).Iter()
-			_, ok := iterator.FindElem[int](it, x, eq)
+			_, ok := iterator.FindElem[int](eq)(it, x)
 			assert.False(t, ok)
 		})
 	}
@@ -111,14 +111,14 @@ func TestFindElemIndex(t *testing.T) {
 	assertFound := func(name string, xs []int, x int, i int) {
 		t.Run(name, func(t *testing.T) {
 			it := slice.Slice[int](xs).Iter()
-			found := iterator.FindElemIndex[int](it, x, eq)
+			found := iterator.FindElemIndex[int](eq)(it, x)
 			assert.Equal(t, found, i)
 		})
 	}
 	assertNotFound := func(name string, xs []int, x int) {
 		t.Run(name, func(t *testing.T) {
 			it := slice.Slice[int](xs).Iter()
-			found := iterator.FindElemIndex[int](it, x, eq)
+			found := iterator.FindElemIndex[int](eq)(it, x)
 			assert.True(t, found < 0)
 		})
 	}

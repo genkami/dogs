@@ -165,15 +165,19 @@ func FindIndex[T {{ .Constraint }}](xs {{ .TypeName }}[T], fn func(T) bool) int 
 	"FindElem": `
 // FindElem returns a first element in xs that equals to e in the sense of given Eq.
 // It returns false as a second return value if no elements are found.
-func FindElem[T {{ .Constraint }}](xs {{ .TypeName }}[T], e T, eq cmp.Eq[T]) (T, bool) {
-	return {{ .IterPrefix }}FindElem[T](xs.Iter(), e, eq)
+func FindElem[T {{ .Constraint }}](eq cmp.Eq[T]) func(xs {{ .TypeName }}[T], e T) (T, bool) {
+	return func(xs {{ .TypeName }}[T], e T) (T, bool) {
+		return {{ .IterPrefix }}FindElem[T](eq)(xs.Iter(), e)
+	}
 }
 `,
 	"FindElemIndex": `
 // FindElemIndex returns a first index of an element in xs that equals to e in the sense of given Eq.
 // It returns negative value if no elements are found.
-func FindElemIndex[T {{ .Constraint }}](xs {{ .TypeName }}[T], e T, eq cmp.Eq[T]) int {
-	return {{ .IterPrefix }}FindElemIndex[T](xs.Iter(), e, eq)
+func FindElemIndex[T {{ .Constraint }}](eq cmp.Eq[T]) func(xs {{ .TypeName }}[T], e T) int {
+	return func(xs {{ .TypeName }}[T], e T) int {
+		return {{ .IterPrefix }}FindElemIndex[T](eq)(xs.Iter(), e)
+	}
 }
 `,
 	"Filter": `

@@ -29,8 +29,10 @@ func Find[T any](xs Option[T], fn func(T) bool) (T, bool) {
 
 // FindElem returns a first element in xs that equals to e in the sense of given Eq.
 // It returns false as a second return value if no elements are found.
-func FindElem[T any](xs Option[T], e T, eq cmp.Eq[T]) (T, bool) {
-	return iterator.FindElem[T](xs.Iter(), e, eq)
+func FindElem[T any](eq cmp.Eq[T]) func(xs Option[T], e T) (T, bool) {
+	return func(xs Option[T], e T) (T, bool) {
+		return iterator.FindElem[T](eq)(xs.Iter(), e)
+	}
 }
 
 // Fold accumulates every element in a collection by applying fn.

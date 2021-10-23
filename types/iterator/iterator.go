@@ -71,14 +71,18 @@ func FindIndex[T any](it Iterator[T], fn func(T) bool) int {
 
 // FindElem returns a first element in `it` that equals to `e` in the sense of given `Eq`.
 // It returns `false` as a second return value if no elements are found.
-func FindElem[T any](it Iterator[T], e T, eq cmp.Eq[T]) (T, bool) {
-	return Find[T](it, func(x T) bool { return eq.Equal(x, e) })
+func FindElem[T any](eq cmp.Eq[T]) func(it Iterator[T], e T) (T, bool) {
+	return func(it Iterator[T], e T) (T, bool) {
+		return Find[T](it, func(x T) bool { return eq.Equal(x, e) })
+	}
 }
 
 // FindElemIndex returns a first index of an element in `it` that equals to `e` in the sense of given `Eq`.
 // It returns negative value if no elements are found.
-func FindElemIndex[T any](it Iterator[T], e T, eq cmp.Eq[T]) int {
-	return FindIndex[T](it, func(x T) bool { return eq.Equal(x, e) })
+func FindElemIndex[T any](eq cmp.Eq[T]) func(it Iterator[T], e T) int {
+	return func(it Iterator[T], e T) int {
+		return FindIndex[T](it, func(x T) bool { return eq.Equal(x, e) })
+	}
 }
 
 // Filter returns an Iterator that only returns elements that satisfies given predicate.

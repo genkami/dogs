@@ -29,14 +29,18 @@ func Find[T any](xs *List[T], fn func(T) bool) (T, bool) {
 
 // FindElem returns a first element in xs that equals to e in the sense of given Eq.
 // It returns false as a second return value if no elements are found.
-func FindElem[T any](xs *List[T], e T, eq cmp.Eq[T]) (T, bool) {
-	return iterator.FindElem[T](xs.Iter(), e, eq)
+func FindElem[T any](eq cmp.Eq[T]) func(xs *List[T], e T) (T, bool) {
+	return func(xs *List[T], e T) (T, bool) {
+		return iterator.FindElem[T](eq)(xs.Iter(), e)
+	}
 }
 
 // FindElemIndex returns a first index of an element in xs that equals to e in the sense of given Eq.
 // It returns negative value if no elements are found.
-func FindElemIndex[T any](xs *List[T], e T, eq cmp.Eq[T]) int {
-	return iterator.FindElemIndex[T](xs.Iter(), e, eq)
+func FindElemIndex[T any](eq cmp.Eq[T]) func(xs *List[T], e T) int {
+	return func(xs *List[T], e T) int {
+		return iterator.FindElemIndex[T](eq)(xs.Iter(), e)
+	}
 }
 
 // FindIndex returns a first index of an element in xs that satisfies the given predicate fn.
