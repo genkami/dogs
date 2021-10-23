@@ -35,20 +35,6 @@ func FindElem[T any](eq cmp.Eq[T]) func(xs *List[T], e T) (T, bool) {
 	}
 }
 
-// FindElemIndex returns a first index of an element in xs that equals to e in the sense of given Eq.
-// It returns negative value if no elements are found.
-func FindElemIndex[T any](eq cmp.Eq[T]) func(xs *List[T], e T) int {
-	return func(xs *List[T], e T) int {
-		return iterator.FindElemIndex[T](eq)(xs.Iter(), e)
-	}
-}
-
-// FindIndex returns a first index of an element in xs that satisfies the given predicate fn.
-// It returns negative value if no elements are found.
-func FindIndex[T any](xs *List[T], fn func(T) bool) int {
-	return iterator.FindIndex[T](xs.Iter(), fn)
-}
-
 // Fold accumulates every element in a collection by applying fn.
 func Fold[T any, U any](init T, xs *List[U], fn func(T, U) T) T {
 	return iterator.Fold[T, U](init, xs.Iter(), fn)
@@ -106,9 +92,4 @@ func SumWithInit[T any](s algebra.Semigroup[T]) func(init T, xs *List[T]) T {
 	return func(init T, xs *List[T]) T {
 		return Fold[T, T](init, xs, s.Combine)
 	}
-}
-
-// Zip combines two collections into one that contains pairs of corresponding elements.
-func Zip[T, U any](a *List[T], b *List[U]) *List[pair.Pair[T, U]] {
-	return FromIterator[pair.Pair[T, U]](iterator.Zip(a.Iter(), b.Iter()))
 }

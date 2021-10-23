@@ -143,8 +143,9 @@ var _ = (*pair.Pair[int, int])(nil)
 `
 
 var allTemplates = map[string]map[string]string{
-	"Collection": collectionTmpl,
-	"Monad":      monadTmpl,
+	"Collection":        collectionTmpl,
+	"OrderedCollection": orderedCollectionTmpl,
+	"Monad":             monadTmpl,
 }
 
 var collectionTmpl = map[string]string{
@@ -155,28 +156,12 @@ func Find[T {{ .Constraint }}](xs {{ .TypeName }}[T], fn func(T) bool) (T, bool)
 	return {{ .IterPrefix }}Find[T](xs.Iter(), fn)
 }
 `,
-	"FindIndex": `
-// FindIndex returns a first index of an element in xs that satisfies the given predicate fn.
-// It returns negative value if no elements are found.
-func FindIndex[T {{ .Constraint }}](xs {{ .TypeName }}[T], fn func(T) bool) int {
-	return {{ .IterPrefix }}FindIndex[T](xs.Iter(), fn)
-}
-`,
 	"FindElem": `
 // FindElem returns a first element in xs that equals to e in the sense of given Eq.
 // It returns false as a second return value if no elements are found.
 func FindElem[T {{ .Constraint }}](eq cmp.Eq[T]) func(xs {{ .TypeName }}[T], e T) (T, bool) {
 	return func(xs {{ .TypeName }}[T], e T) (T, bool) {
 		return {{ .IterPrefix }}FindElem[T](eq)(xs.Iter(), e)
-	}
-}
-`,
-	"FindElemIndex": `
-// FindElemIndex returns a first index of an element in xs that equals to e in the sense of given Eq.
-// It returns negative value if no elements are found.
-func FindElemIndex[T {{ .Constraint }}](eq cmp.Eq[T]) func(xs {{ .TypeName }}[T], e T) int {
-	return func(xs {{ .TypeName }}[T], e T) int {
-		return {{ .IterPrefix }}FindElemIndex[T](eq)(xs.Iter(), e)
 	}
 }
 `,
@@ -202,12 +187,6 @@ func ForEach[T {{ .Constraint }}](xs {{ .TypeName }}[T], fn func(T)) {
 // Fold accumulates every element in a collection by applying fn.
 func Fold[T any, U {{ .Constraint }}](init T, xs {{ .TypeName }}[U], fn func(T, U) T) T {
 	return {{ .IterPrefix }}Fold[T, U](init, xs.Iter(), fn)
-}
-`,
-	"Zip": `
-// Zip combines two collections into one that contains pairs of corresponding elements.
-func Zip[T, U {{ .Constraint }}](a {{ .TypeName }}[T], b {{ .TypeName }}[U]) {{ .TypeName }}[pair.Pair[T, U]] {
-	return FromIterator[pair.Pair[T, U]]({{ .IterPrefix }}Zip(a.Iter(), b.Iter()))
 }
 `,
 	"SumWithInit": `
@@ -258,6 +237,31 @@ func Max[T {{ .Constraint }}](ord cmp.Ord[T]) func(xs {{ .TypeName }}[T]) (T, bo
 // It returns <zero value>, false if the collection is empty.
 func MaxBy[T {{ .Constraint }}](xs {{ .TypeName }}[T], less func(T, T) bool) (T, bool) {
 	return iterator.MaxBy(xs.Iter(), less)
+}
+`,
+}
+
+var orderedCollectionTmpl = map[string]string{
+	"FindIndex": `
+// FindIndex returns a first index of an element in xs that satisfies the given predicate fn.
+// It returns negative value if no elements are found.
+func FindIndex[T {{ .Constraint }}](xs {{ .TypeName }}[T], fn func(T) bool) int {
+	return {{ .IterPrefix }}FindIndex[T](xs.Iter(), fn)
+}
+`,
+	"FindElemIndex": `
+// FindElemIndex returns a first index of an element in xs that equals to e in the sense of given Eq.
+// It returns negative value if no elements are found.
+func FindElemIndex[T {{ .Constraint }}](eq cmp.Eq[T]) func(xs {{ .TypeName }}[T], e T) int {
+	return func(xs {{ .TypeName }}[T], e T) int {
+		return {{ .IterPrefix }}FindElemIndex[T](eq)(xs.Iter(), e)
+	}
+}
+`,
+	"Zip": `
+// Zip combines two collections into one that contains pairs of corresponding elements.
+func Zip[T, U {{ .Constraint }}](a {{ .TypeName }}[T], b {{ .TypeName }}[U]) {{ .TypeName }}[pair.Pair[T, U]] {
+	return FromIterator[pair.Pair[T, U]]({{ .IterPrefix }}Zip(a.Iter(), b.Iter()))
 }
 `,
 }

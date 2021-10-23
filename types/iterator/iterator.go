@@ -15,7 +15,7 @@ type Iterator[T any] interface {
 }
 
 //go:generate gotip run ../../cmd/gen-functions -template Monad -pkg iterator -name Iterator -out zz_generated.monad.go
-//go:generate gotip fmt ./zz_generated.monad.go
+//go:generate gotip fmt .
 
 // Range returns an Iterator that returns start, start+1, ..., end-1, end, sequentially.
 // The returned Iterator does not return any valeus if end is smaller than start.
