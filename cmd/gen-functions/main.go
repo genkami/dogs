@@ -228,6 +228,38 @@ func Sum[T {{ .Constraint }}](m algebra.Monoid[T]) func(xs {{ .TypeName }}[T]) T
 	}
 }
 `,
+	"Min": `
+// Min returns the smallest element with respect to the given Ord.
+// It returns <zero value>, false if the collection is empty.
+func Min[T {{ .Constraint }}](ord cmp.Ord[T]) func(xs {{ .TypeName }}[T]) (T, bool) {
+	return func(xs {{ .TypeName }}[T]) (T, bool) {
+		return iterator.Min(ord)(xs.Iter())
+	}
+}
+`,
+	"MinBy": `
+// MinBy returns the smallest element with respect to the given function.
+// It returns <zero value>, false if the collection is empty.
+func MinBy[T {{ .Constraint }}](xs {{ .TypeName }}[T], less func(T, T) bool) (T, bool) {
+	return iterator.MinBy(xs.Iter(), less)
+}
+`,
+	"Max": `
+// Max returns the largest element with respect to the given Ord.
+// It returns <zero value>, false if the collection is empty.
+func Max[T {{ .Constraint }}](ord cmp.Ord[T]) func(xs {{ .TypeName }}[T]) (T, bool) {
+	return func(xs {{ .TypeName }}[T]) (T, bool) {
+		return iterator.Max(ord)(xs.Iter())
+	}
+}
+`,
+	"MaxBy": `
+// MaxBy returns the smallest element with respect to the given function.
+// It returns <zero value>, false if the collection is empty.
+func MaxBy[T {{ .Constraint }}](xs {{ .TypeName }}[T], less func(T, T) bool) (T, bool) {
+	return iterator.MaxBy(xs.Iter(), less)
+}
+`,
 }
 
 var monadTmpl = map[string]string{

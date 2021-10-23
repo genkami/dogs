@@ -50,6 +50,34 @@ func Map[T, U comparable](xs Set[T], fn func(T) U) Set[U] {
 	return FromIterator[U](iterator.Map[T, U](xs.Iter(), fn))
 }
 
+// Max returns the largest element with respect to the given Ord.
+// It returns <zero value>, false if the collection is empty.
+func Max[T comparable](ord cmp.Ord[T]) func(xs Set[T]) (T, bool) {
+	return func(xs Set[T]) (T, bool) {
+		return iterator.Max(ord)(xs.Iter())
+	}
+}
+
+// MaxBy returns the smallest element with respect to the given function.
+// It returns <zero value>, false if the collection is empty.
+func MaxBy[T comparable](xs Set[T], less func(T, T) bool) (T, bool) {
+	return iterator.MaxBy(xs.Iter(), less)
+}
+
+// Min returns the smallest element with respect to the given Ord.
+// It returns <zero value>, false if the collection is empty.
+func Min[T comparable](ord cmp.Ord[T]) func(xs Set[T]) (T, bool) {
+	return func(xs Set[T]) (T, bool) {
+		return iterator.Min(ord)(xs.Iter())
+	}
+}
+
+// MinBy returns the smallest element with respect to the given function.
+// It returns <zero value>, false if the collection is empty.
+func MinBy[T comparable](xs Set[T], less func(T, T) bool) (T, bool) {
+	return iterator.MinBy(xs.Iter(), less)
+}
+
 // Sum sums up all values in xs.
 // It returns m.Empty() when xs is empty.
 func Sum[T comparable](m algebra.Monoid[T]) func(xs Set[T]) T {
