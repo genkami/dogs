@@ -368,6 +368,42 @@ func TestSum(t *testing.T) {
 	})
 }
 
+func TestMin(t *testing.T) {
+	ord := cmp.DeriveOrd[int]()
+	assertFound := func(name string, xs []int, expected int) {
+		min, ok := iterator.Min(ord)(slice.Slice[int](xs).Iter())
+		assert.True(t, ok, name)
+		assert.Equal(t, expected, min, name)
+	}
+	assertNotFound := func(name string, xs []int) {
+		_, ok := iterator.Min(ord)(slice.Slice[int](xs).Iter())
+		assert.False(t, ok)
+	}
+
+	assertNotFound("empty", []int{})
+	assertFound("one", []int{3}, 3)
+	assertFound("two", []int{3, 2}, 2)
+	assertFound("many", []int{5, 3, 9, 4, 6}, 3)
+}
+
+func TestMinBy(t *testing.T) {
+	less := func(x, y int) bool { return x < y }
+	assertFound := func(name string, xs []int, expected int) {
+		min, ok := iterator.MinBy(slice.Slice[int](xs).Iter(), less)
+		assert.True(t, ok, name)
+		assert.Equal(t, expected, min, name)
+	}
+	assertNotFound := func(name string, xs []int) {
+		_, ok := iterator.MinBy(slice.Slice[int](xs).Iter(), less)
+		assert.False(t, ok)
+	}
+
+	assertNotFound("empty", []int{})
+	assertFound("one", []int{3}, 3)
+	assertFound("two", []int{3, 2}, 2)
+	assertFound("many", []int{5, 3, 9, 4, 6}, 3)
+}
+
 func TestPure(t *testing.T) {
 	subject := func(x int) []int {
 		it := iterator.Pure(x)

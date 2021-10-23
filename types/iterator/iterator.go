@@ -306,8 +306,37 @@ func Sum[T any](m algebra.Monoid[T]) func(it Iterator[T]) T {
 	}
 }
 
-// TODO: Min
-// TODO: MinBy
+// Min returns the smallest element with respect to the given Ord.
+// It returns `<zero value>, false` if the iterator is empty.
+func Min[T any](ord cmp.Ord[T]) func(it Iterator[T]) (T, bool) {
+	return func(it Iterator[T]) (T, bool) {
+		return MinBy(it, ord.Lt)
+	}
+}
+
+// MinBy returns the smallest element with respect to the given function.
+// It returns `<zero value>, false` if the iterator is empty.
+func MinBy[T any](it Iterator[T], less func(T, T) bool) (T, bool) {
+	var min T
+	first := true
+	for {
+		x, ok := it.Next()
+		if !ok {
+			break
+		}
+		if first {
+			first = false
+			min = x
+		} else if less(x, min) {
+			min = x
+		}
+	}
+	if first {
+		return min, false
+	}
+	return min, true
+}
+
 // TODO: Max
 // TODO: MaxBy
 
