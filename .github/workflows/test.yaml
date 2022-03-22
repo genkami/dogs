@@ -2,7 +2,6 @@ on: [push, pull_request]
 name: Test
 jobs:
   test:
-    if: false # We disable CI for now since no versions of Go support necessary features to test dogs.
     strategy:
       matrix:
         go-version: [1.18.x]
