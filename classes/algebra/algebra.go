@@ -1,6 +1,6 @@
 package algebra
 
-import "constraints"
+import "golang.org/x/exp/constraints"
 
 // Additive is a type that can use `+` operator.
 type Additive interface {

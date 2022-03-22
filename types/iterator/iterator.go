@@ -1,7 +1,7 @@
 package iterator
 
 import (
-	"constraints"
+	"golang.org/x/exp/constraints"
 	"github.com/genkami/dogs/classes/algebra"
 	"github.com/genkami/dogs/classes/cmp"
 	"github.com/genkami/dogs/types/pair"
