@@ -1,8 +1,8 @@
 package cmp
 
 import (
-	"golang.org/x/exp/constraints"
 	"fmt"
+	"golang.org/x/exp/constraints"
 )
 
 // Eq defines equality of type T.

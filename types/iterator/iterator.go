@@ -1,10 +1,10 @@
 package iterator
 
 import (
-	"golang.org/x/exp/constraints"
 	"github.com/genkami/dogs/classes/algebra"
 	"github.com/genkami/dogs/classes/cmp"
 	"github.com/genkami/dogs/types/pair"
+	"golang.org/x/exp/constraints"
 )
 
 // Iterable iterates over some set of elements.
