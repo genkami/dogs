@@ -11,8 +11,8 @@ type Option[T any] struct {
 	v    T
 }
 
-//go:generate gotip run ../../cmd/gen-functions -template Collection -pkg option -name Option -out zz_generated.collection.go
-//go:generate gotip fmt .
+//go:generate go run ../../cmd/gen-functions -template Collection -pkg option -name Option -out zz_generated.collection.go
+//go:generate go fmt .
 
 // Some returns an Option that consists of x.
 func Some[T any](x T) Option[T] {

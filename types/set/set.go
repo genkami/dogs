@@ -6,8 +6,8 @@ import "github.com/genkami/dogs/types/iterator"
 // https://golang.org/ref/spec#Comparison_operators
 type Set[T comparable] map[T]struct{}
 
-//go:generate gotip run ../../cmd/gen-functions -template Collection -pkg set -name Set -constraint comparable -out zz_generated.collection.go
-//go:generate gotip fmt .
+//go:generate go run ../../cmd/gen-functions -template Collection -pkg set -name Set -constraint comparable -out zz_generated.collection.go
+//go:generate go fmt .
 
 // New creates a new Set.
 func New[T comparable](elems ...T) Set[T] {

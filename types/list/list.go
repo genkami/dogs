@@ -9,9 +9,9 @@ type List[T any] struct {
 	Tail *List[T]
 }
 
-//go:generate gotip run ../../cmd/gen-functions -template Collection -pkg list -name *List -out zz_generated.collection.go
-//go:generate gotip run ../../cmd/gen-functions -template OrderedCollection -pkg list -name *List -out zz_generated.ordered_collection.go
-//go:generate gotip fmt .
+//go:generate go run ../../cmd/gen-functions -template Collection -pkg list -name *List -out zz_generated.collection.go
+//go:generate go run ../../cmd/gen-functions -template OrderedCollection -pkg list -name *List -out zz_generated.ordered_collection.go
+//go:generate go fmt .
 
 func New[T any](xs ...T) *List[T] {
 	var list *List[T] = nil

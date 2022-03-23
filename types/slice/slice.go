@@ -18,9 +18,9 @@ func FromIterator[T any](it iterator.Iterator[T]) Slice[T] {
 	))
 }
 
-//go:generate gotip run ../../cmd/gen-functions -template Collection -pkg slice -name Slice -out zz_generated.collection.go
-//go:generate gotip run ../../cmd/gen-functions -template OrderedCollection -pkg slice -name Slice -out zz_generated.ordered_collection.go
-//go:generate gotip fmt .
+//go:generate go run ../../cmd/gen-functions -template Collection -pkg slice -name Slice -out zz_generated.collection.go
+//go:generate go run ../../cmd/gen-functions -template OrderedCollection -pkg slice -name Slice -out zz_generated.ordered_collection.go
+//go:generate go fmt .
 
 // Iter returns an Iterator that iterates over given slice.
 func (xs Slice[T]) Iter() iterator.Iterator[T] {
