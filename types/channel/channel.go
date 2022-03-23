@@ -4,7 +4,7 @@ import (
 	"github.com/genkami/dogs/types/iterator"
 )
 
-// Channel[T] is a channel of type T.
+// Chan[T] is a channel of type T.
 type Chan[T any] chan T
 
 //go:generate go run ../../cmd/gen-functions -template Collection -pkg channel -name Chan -out zz_generated.collection.go
