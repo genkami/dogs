@@ -1,10 +1,12 @@
 module github.com/genkami/dogs
 
-go 1.18
+go 1.23.0
+
+toolchain go1.24.1
 
 require (
 	github.com/stretchr/testify v1.8.4
-	golang.org/x/exp v0.0.0-20230626212559-97b1e661b5df
+	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394
 )
 
 require (
